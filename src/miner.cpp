@@ -68,9 +68,15 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
         pblock->nTime = nNewTime;
 
     // Updating time can change work required on testnet:
+    //if (consensusParams.fPowAllowMinDifficultyBlocks)
+    if (TestNet()) //dgc version of "if"
+        pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, pblock->GetAlgo(),consensusParams);
+
+/*
+    // Updating time can change work required on testnet:
     if (consensusParams.fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock, consensusParams);
-
+*/
     return nNewTime - nOldTime;
 }
 
@@ -81,6 +87,27 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
     if(!pblocktemplate.get())
         return NULL;
     CBlock *pblock = &pblocktemplate->block; // pointer for convenience
+
+    // Set block version
+    pblock->nVersion = BLOCK_VERSION_DEFAULT;
+    CBlockIndex* pindexPrev = chainActive.Tip();
+
+    int algo=ALGO_X11;// dgc c'est tres douteux !!
+
+    switch (algo)
+    {
+        case ALGO_SCRYPT:
+            break;
+        case ALGO_SHA256D:
+            pblock->nVersion |= BLOCK_VERSION_SHA256D;
+            break;
+        case ALGO_X11:
+            pblock->nVersion |= BLOCK_VERSION_X11;
+            break;
+        default:
+            error("CreateNewBlock: bad algo");
+            return NULL;
+    }
 
     // Create coinbase tx
     CMutableTransaction txNew;
@@ -306,7 +333,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         // Fill in header
         pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
         UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
-        pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
+        pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock,algo, chainparams.GetConsensus());
         pblock->nNonce         = 0;
         pblocktemplate->vTxSigOps[0] = GetLegacySigOpCount(pblock->vtx[0]);
 

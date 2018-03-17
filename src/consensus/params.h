@@ -9,6 +9,53 @@
 #include "uint256.h"
 #include <map>
 #include <string>
+#include "bignum.h"
+
+
+enum {
+    ALGO_SHA256D = 0,
+    ALGO_SCRYPT  = 1,
+    ALGO_X11     = 2,
+    NUM_ALGOS };
+
+enum
+{
+    // primary version
+    BLOCK_VERSION_DEFAULT        = 1,
+
+    // algo
+    BLOCK_VERSION_ALGO           = (7 << 9),
+    BLOCK_VERSION_SHA256D        = (1 << 9),
+    BLOCK_VERSION_X11      	 = (2 << 9),
+};
+
+inline int GetAlgo(int nVersion)
+{
+    switch (nVersion & BLOCK_VERSION_ALGO)
+    {
+        case 1:
+            return ALGO_SCRYPT;
+        case BLOCK_VERSION_SHA256D:
+            return ALGO_SHA256D;
+        case BLOCK_VERSION_X11:
+            return ALGO_X11;
+    }
+    return ALGO_SCRYPT;
+}
+
+inline std::string GetAlgoName(int Algo)
+{
+    switch (Algo)
+    {
+        case ALGO_SHA256D:
+            return std::string("sha256d");
+        case ALGO_SCRYPT:
+            return std::string("scrypt");
+        case ALGO_X11:
+            return std::string("x11");
+    }
+    return std::string("unknown");       
+}
 
 namespace Consensus {
 
@@ -75,6 +122,10 @@ struct Params {
     BIP9Deployment vDeployments[MAX_VERSION_BITS_DEPLOYMENTS];
     /** Proof of work parameters */
     uint256 powLimit;
+
+    //Array added for DGC, original type CBigNum
+    CBigNum bnProofOfWorkLimit[NUM_ALGOS];
+    
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     int64_t nPowTargetSpacing;

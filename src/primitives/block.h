@@ -9,7 +9,12 @@
 #include "primitives/transaction.h"
 #include "serialize.h"
 #include "uint256.h"
+#include "scrypt.h"
+#include "hash.h"
+#include "consensus/params.h"
 
+#define BEGIN(a)            ((char*)&(a))
+#define END(a)              ((char*)&((&(a))[1]))
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
  * requirements.  When they solve the proof-of-work, they broadcast the block
@@ -32,6 +37,23 @@ public:
     {
         SetNull();
     }
+
+    int GetAlgo() const { return ::GetAlgo(nVersion); }
+
+
+inline int GetAlgo(int nVersion)//dgc CETTE FONCTION EST DOUBLé, c'est degeu ...
+{
+    switch (nVersion & BLOCK_VERSION_ALGO)
+    {
+        case 1:
+            return ALGO_SCRYPT;
+        case BLOCK_VERSION_SHA256D:
+            return ALGO_SHA256D;
+        case BLOCK_VERSION_X11:
+            return ALGO_X11;
+    }
+    return ALGO_SCRYPT;
+}
 
     ADD_SERIALIZE_METHODS;
 
@@ -62,6 +84,37 @@ public:
     }
 
     uint256 GetHash() const;
+
+  // Note: we use explicitly provided algo instead of the one returned by GetAlgo(), because this can be a block
+    // from foreign chain (parent block in merged mining) which does not encode algo in its nVersion field.
+    uint256 GetPoWHash(int algo) const
+    {
+       
+         // LogPrintf("GetPoWHash %d \n",algo);
+          /* juste quelque infos
+          enum {
+    ALGO_SHA256D = 0,
+    ALGO_SCRYPT  = 1,
+    ALGO_X11     = 2,
+    NUM_ALGOS };
+    */
+        switch (algo)
+        {
+            case ALGO_SHA256D:
+                return GetHash();
+            case ALGO_SCRYPT:
+            {
+                uint256 thash;
+                // Caution: scrypt_1024_1_1_256 assumes fixed length of 80 bytes
+                scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+                return thash;
+            }
+            case ALGO_X11:
+                return HashX11(BEGIN(nVersion), END(nNonce));
+        }
+        return GetHash();
+    }
+
 
     int64_t GetBlockTime() const
     {

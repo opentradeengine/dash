@@ -368,6 +368,7 @@ libbitcoin_common_a_SOURCES = \
   protocol.cpp \
   pubkey.cpp \
   scheduler.cpp \
+  scrypt.cpp \
   script/interpreter.cpp \
   script/script.cpp \
   script/script_error.cpp \

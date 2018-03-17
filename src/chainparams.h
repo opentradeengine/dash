@@ -56,7 +56,7 @@ public:
     const CMessageHeader::MessageStartChars& MessageStart() const { return pchMessageStart; }
     const std::vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
     int GetDefaultPort() const { return nDefaultPort; }
-
+    const CBigNum ProofOfWorkLimit(int algo) const { return consensus.bnProofOfWorkLimit[algo]; }   
     const CBlock& GenesisBlock() const { return genesis; }
     /** Make miner wait to have peers to avoid wasting work */
     bool MiningRequiresPeers() const { return fMiningRequiresPeers; }
@@ -127,4 +127,12 @@ CChainParams& Params(const std::string& chain);
  */
 void SelectParams(const std::string& chain);
 
+inline bool TestNet() {
+    // Note: it's deliberate that this returns "false" for regression test mode.
+    return Params().NetworkIDString() == CBaseChainParams::TESTNET;
+}
+
+inline bool RegTest() {
+    return Params().NetworkIDString() == CBaseChainParams::REGTEST;
+}
 #endif // BITCOIN_CHAINPARAMS_H

@@ -238,6 +238,17 @@ public:
         nNonce         = block.nNonce;
     }
 
+    int GetAlgo() const { return ::GetAlgo(nVersion); }
+
+    bool CheckIndex(const Consensus::Params& consensus) const
+    {
+        int algo = GetAlgo();
+        if (algo == ALGO_SHA256D)
+            return CheckProofOfWork(GetBlockHash(), nBits,consensus);
+        else
+            return true;
+	}
+
     CDiskBlockPos GetBlockPos() const {
         CDiskBlockPos ret;
         if (nStatus & BLOCK_HAVE_DATA) {
