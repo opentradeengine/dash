@@ -58,6 +58,7 @@ using namespace std;
 /**
  * Global state
  */
+static const int V3_FORK = 1028000;
 
 CCriticalSection cs_main;
 
@@ -1230,6 +1231,60 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
         might be a good idea to change this to use prev bits
         but current height to avoid confusion.
 */
+CAmount GetBlockValue(int nHeight)
+{
+   CAmount nSubsidy = 15 *COIN;
+    if(nHeight < 1080)
+    {
+        nSubsidy = 2 * COIN;
+    }
+    else if(nHeight < 2160)
+    {
+        nSubsidy = 1 * COIN;
+    }
+    else if(nHeight < 3240)
+    {
+        nSubsidy = 2 * COIN;
+    }
+    else if(nHeight < 4320)
+    {
+        nSubsidy = 5 * COIN;
+    }
+    else if(nHeight < 5400)
+    {
+        nSubsidy = 8 * COIN;
+    }
+    else if(nHeight < 6480)
+    {
+        nSubsidy = 11 * COIN;
+    }
+    else if(nHeight < 7560)
+    {
+        nSubsidy = 14 * COIN;
+    }
+    else if(nHeight < 8640)
+    {
+        nSubsidy = 17 * COIN;
+    }
+    else if(nHeight < 523800)
+    {
+        nSubsidy = 20 * COIN;
+    }
+    else if(TestNet())
+    {
+	nSubsidy = 5 * COIN;
+    }
+    else if(!TestNet() && nHeight >= V3_FORK)
+    {
+	nSubsidy = 5 * COIN;
+    }
+
+    // Subsidy is cut in half every 4730400 blocks, which will occur approximately every 3 years
+    nSubsidy >>= (nHeight / 4730400);
+
+   return nSubsidy;
+}
+
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 {
     double dDiff;
@@ -2225,7 +2280,10 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
-    CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
+
+    CAmount blockReward = nFees + GetBlockValue(pindex->pprev->nHeight);
+
+//    CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, blockReward, strError)) {
         return state.DoS(0, error("ConnectBlock(DASH): %s", strError), REJECT_INVALID, "bad-cb-amount");
