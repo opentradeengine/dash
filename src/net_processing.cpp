@@ -394,10 +394,18 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<CBl
     // Make sure pindexBestKnownBlock is up to date, we'll need it.
     ProcessBlockAvailability(nodeid);
 
-    if (state->pindexBestKnownBlock == NULL || state->pindexBestKnownBlock->nChainWork < chainActive.Tip()->nChainWork || state->pindexBestKnownBlock->nChainWork < UintToArith256(consensusParams.nMinimumChainWork)) {
-        // This peer has nothing interesting.
+    if (state->pindexBestKnownBlock == NULL)
         return;
-    }
+
+    if(state->pindexBestKnownBlock->nChainWork < chainActive.Tip()->nChainWork)
+        return;
+    
+    //DGC TODO !!!!
+    //  if(state->pindexBestKnownBlock->nChainWork < UintToArith256(consensusParams.nMinimumChainWork)) 
+    //  {
+    //     // This peer has nothing interesting.
+    //     return;
+    // }
 
     if (state->pindexLastCommonBlock == NULL) {
         // Bootstrap quickly by guessing a parent of our best tip is the forking point.
