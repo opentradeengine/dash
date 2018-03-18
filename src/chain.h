@@ -318,8 +318,8 @@ public:
     bool IsValid(enum BlockStatus nUpTo = BLOCK_VALID_TRANSACTIONS) const
     {
         assert(!(nUpTo & ~BLOCK_VALID_MASK)); // Only validity flags allowed.
-        if (nStatus & BLOCK_FAILED_MASK)
-            return false;
+        // if (nStatus & BLOCK_FAILED_MASK)
+        //     return false;
         return ((nStatus & BLOCK_VALID_MASK) >= nUpTo);
     }
 
