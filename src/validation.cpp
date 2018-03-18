@@ -2281,7 +2281,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
 
-    CAmount blockReward = nFees + GetBlockValue(pindex->pprev->nHeight);
+    CAmount blockReward = nFees + GetBlockValue(pindex->nHeight);
 
 //    CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
     std::string strError = "";
