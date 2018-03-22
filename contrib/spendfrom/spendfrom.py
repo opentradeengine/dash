@@ -35,9 +35,9 @@ def check_json_precision():
 def determine_db_dir():
     """Return the default location of the Digitalcoin Core data directory"""
     if platform.system() == "Darwin":
-        return os.path.expanduser("~/Library/Application Support/DashCore/")
+        return os.path.expanduser("~/Library/Application Support/digitalcoin/")
     elif platform.system() == "Windows":
-        return os.path.join(os.environ['APPDATA'], "DashCore")
+        return os.path.join(os.environ['APPDATA'], "digitalcoin")
     return os.path.expanduser("~/.digitalcoin")
 
 def read_bitcoin_config(dbdir):

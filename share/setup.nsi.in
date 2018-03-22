@@ -50,9 +50,9 @@ Var StartMenuGroup
 # Installer attributes
 OutFile @abs_top_srcdir@/digitalcoincore-${VERSION}-win@WINDOWS_BITS@-setup.exe
 !if "@WINDOWS_BITS@" == "64"
-InstallDir $PROGRAMFILES64\DashCore
+InstallDir $PROGRAMFILES64\digitalcoin
 !else
-InstallDir $PROGRAMFILES\DashCore
+InstallDir $PROGRAMFILES\digitalcoin
 !endif
 CRCCheck on
 XPStyle on
