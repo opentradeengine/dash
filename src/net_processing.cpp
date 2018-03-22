@@ -401,11 +401,11 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<CBl
         return;
     
     //DGC TODO !!!!
-    //  if(state->pindexBestKnownBlock->nChainWork < UintToArith256(consensusParams.nMinimumChainWork)) 
-    //  {
-    //     // This peer has nothing interesting.
-    //     return;
-    // }
+     if(state->pindexBestKnownBlock->nChainWork < UintToArith256(consensusParams.nMinimumChainWork)) 
+     {
+        // This peer has nothing interesting.
+        return;
+    }
 
     if (state->pindexLastCommonBlock == NULL) {
         // Bootstrap quickly by guessing a parent of our best tip is the forking point.
