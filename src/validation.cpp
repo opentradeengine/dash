@@ -2499,7 +2499,9 @@ void static UpdateTip(CBlockIndex *pindexNew) {
 
     cvBlockChange.notify_all();
 
+    //This code is disabled in original dgc v3
     // Check the version of the last 100 blocks to see if we need to upgrade:
+    /*
     static bool fWarned = false;
     if (!IsInitialBlockDownload())
     {
@@ -2539,6 +2541,7 @@ void static UpdateTip(CBlockIndex *pindexNew) {
             }
         }
     }
+    */
 }
 
 /** Disconnect chainActive's tip. You probably want to call mempool.removeForReorg and manually re-limit mempool size after this, with cs_main held. */
