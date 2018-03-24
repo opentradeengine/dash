@@ -80,7 +80,7 @@ int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParam
     return nNewTime - nOldTime;
 }
 
-CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& scriptPubKeyIn)
+CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& scriptPubKeyIn, int algo)
 {
     // Create new block
     std::unique_ptr<CBlockTemplate> pblocktemplate(new CBlockTemplate());
@@ -92,7 +92,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
     pblock->nVersion = BLOCK_VERSION_DEFAULT;
     CBlockIndex* pindexPrev = chainActive.Tip();
 
-    int algo=ALGO_X11;// dgc c'est tres douteux !!
+    //int algo=ALGO_X11;// dgc c'est tres douteux !!, en plus maintenant c'est en argument...
 
     switch (algo)
     {
@@ -465,7 +465,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             CBlockIndex* pindexPrev = chainActive.Tip();
             if(!pindexPrev) break;
 
-            std::unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlock(chainparams, coinbaseScript->reserveScript));
+            std::unique_ptr<CBlockTemplate> pblocktemplate(CreateNewBlock(chainparams, coinbaseScript->reserveScript,miningAlgo));
             if (!pblocktemplate.get())
             {
                 LogPrintf("DigitalcoinMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
