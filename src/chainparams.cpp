@@ -223,6 +223,21 @@ public:
 static CMainParams mainParams;
 
 /**
+ * Testnet (v4)
+ */
+class CDGCTestNetParams : public CMainParams 
+{
+public:
+    CDGCTestNetParams()
+    {
+        nDefaultPort = 12025;      
+        vFixedSeeds.clear();
+        vSeeds.clear();        
+    }
+};
+static CDGCTestNetParams dgcTestNetParams;
+
+/**
  * Testnet (v3)
  */
 class CTestNetParams : public CChainParams {
@@ -464,7 +479,7 @@ CChainParams& Params(const std::string& chain)
     if (chain == CBaseChainParams::MAIN)
             return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
-            return testNetParams;
+            return dgcTestNetParams;
     else if (chain == CBaseChainParams::REGTEST)
             return regTestParams;
     else
