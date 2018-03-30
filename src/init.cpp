@@ -229,6 +229,8 @@ void PrepareShutdown()
     StopREST();
     StopRPC();
     StopHTTPServer();
+    StopRPCThreads();
+    ShutdownRPCMining();
 #ifdef ENABLE_WALLET
     if (pwalletMain)
         pwalletMain->Flush(false);
@@ -2082,6 +2084,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     if (!connman.Start(scheduler, strNodeError, connOptions))
         return InitError(strNodeError);
+    StartNode(threadGroup);
+    // InitRPCMining is needed here so getwork/getblocktemplate in the GUI debug console works properly.
+    InitRPCMining();
+    if (fServer)
+        StartRPCThreads();
 
     // Generate coins in the background
     GenerateBitcoins(GetBoolArg("-gen", DEFAULT_GENERATE), GetArg("-genproclimit", DEFAULT_GENERATE_THREADS), chainparams, connman);
