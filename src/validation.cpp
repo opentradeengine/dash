@@ -1234,9 +1234,11 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
         might be a good idea to change this to use prev bits
         but current height to avoid confusion.
 */
-CAmount GetBlockValue(int nHeight)
+CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 {
    CAmount nSubsidy = 15 *COIN;
+   int nHeight = nPrevHeight + 1;
+
     if(nHeight < 1080)
     {
         nSubsidy = 2 * COIN;
@@ -1283,9 +1285,11 @@ CAmount GetBlockValue(int nHeight)
     }
 
     // Subsidy is cut in half every 4730400 blocks, which will occur approximately every 3 years
-    nSubsidy >>= (nHeight / 4730400);
+    nSubsidy >>= (nHeight / consensusParams.nSubsidyHalvingInterval);
 
-   return nSubsidy;
+    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+
+    return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
@@ -2284,9 +2288,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // to recognize that block is actually invalid.
     // TODO: resync data (both ways?) and try to reprocess this block later.
 
-    CAmount blockReward = nFees + GetBlockValue(pindex->nHeight);
-
-//    CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
+    CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
     std::string strError = "";
     if (!IsBlockValueValid(block, pindex->nHeight, blockReward, strError)) {
         return state.DoS(0, error("ConnectBlock(DASH): %s", strError), REJECT_INVALID, "bad-cb-amount");
