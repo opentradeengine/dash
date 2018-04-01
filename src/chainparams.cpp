@@ -52,7 +52,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     const char* pszTimestamp = "Digitalcoin, A Currency for a Digital Age";
-    const CScript genesisOutputScript = CScript() << ParseHex("04a5814813115273a109cff99907ba4a05d951873dae7acb6c973d0c9e7c88911a3dbc9aa600deac241b91707e7b4ffb30ad91c8e56e695a1ddf318592988afe0a") << OP_CHECKSIG;
+    const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -77,11 +77,11 @@ public:
         consensus.nMasternodePaymentsIncreaseBlock = 158000; // actual historical value
         consensus.nMasternodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
-        consensus.nBudgetPaymentsStartBlock = 328008; // actual historical value
+        consensus.nBudgetPaymentsStartBlock = 4000000; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24;
-        consensus.nSuperblockStartBlock = 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockStartBlock = 5000000; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nSuperblockCycle = 16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
@@ -287,6 +287,11 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
+	    consensus.bnProofOfWorkLimit[ALGO_SHA256D] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
+        consensus.bnProofOfWorkLimit[ALGO_SCRYPT]  = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
+        consensus.bnProofOfWorkLimit[ALGO_X11] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
+
+		
         // Deployment of BIP68, BIP112, and BIP113.
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].nStartTime = 1506556800; // September 28th, 2017
@@ -320,12 +325,12 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1367867384, 672176, 0x1e0ffff0, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1522532132, 180451, 0x207fffff, 1, 50 * COIN);
         //genesis = CreateGenesisBlock(1390666206UL, 3861367235UL, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
-        assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
+        assert(consensus.hashGenesisBlock == uint256S("0x8078c1b044405602d54bb2ddbc2080db5560a1fdf8d835085bb9607c77940840"));
+        assert(genesis.hashMerkleRoot == uint256S("0xd8776ed7710a3e8face66c59fbd7cae72f03e8bab1f7228e711a4ececfb0c358"));
 
 
 //        assert(consensus.hashGenesisBlock == uint256S("0x00000bafbc94add76cb75e2ec92894837288a481e5c005f6563d91623bf8bc2c"));
@@ -364,9 +369,9 @@ public:
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-        	(     0, uint256S("0x7497ea1b465eb39f1c8f507bc877078fe016d6fcb6dfad3a64c98dcc6e1e8496")),
+        	(     0, uint256S("0x8078c1b044405602d54bb2ddbc2080db5560a1fdf8d835085bb9607c77940840")),
 
-            1393183580, // * UNIX timestamp of last checkpoint block
+            1522532132, // * UNIX timestamp of last checkpoint block
             30549816,       // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
             1000.0         // * estimated number of transactions per day after checkpoint
@@ -489,7 +494,7 @@ CChainParams& Params(const std::string& chain)
     if (chain == CBaseChainParams::MAIN)
             return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
-            return dgcTestNetParams;
+            return testNetParams;
     else if (chain == CBaseChainParams::REGTEST)
             return regTestParams;
     else

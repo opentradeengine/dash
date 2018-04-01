@@ -93,7 +93,7 @@ CBaseChainParams& BaseParams(const std::string& chain)
     if (chain == CBaseChainParams::MAIN)
         return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
-        return dgcTestNetParams;
+        return testNetParams;
     else if (chain == CBaseChainParams::REGTEST)
         return regTestParams;
     else
