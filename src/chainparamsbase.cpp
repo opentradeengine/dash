@@ -38,21 +38,6 @@ public:
 static CBaseMainParams mainParams;
 
 /**
- * Testnet (v4)
- */
-class CBaseDGCTestNetParams : public CBaseChainParams
-{
-public:
-    CBaseDGCTestNetParams()
-    {
-        nRPCPort = 19998;
-        strDataDir = "testnet4";
-    }
-};
-static CBaseDGCTestNetParams dgcTestNetParams;
-
-
-/**
  * Testnet (v3)
  */
 class CBaseTestNetParams : public CBaseChainParams
@@ -93,7 +78,7 @@ CBaseChainParams& BaseParams(const std::string& chain)
     if (chain == CBaseChainParams::MAIN)
         return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
-        return dgcTestNetParams;
+        return testNetParams;
     else if (chain == CBaseChainParams::REGTEST)
         return regTestParams;
     else

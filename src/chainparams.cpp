@@ -223,32 +223,6 @@ public:
 static CMainParams mainParams;
 
 /**
- * Testnet (v4)
- */
-class CDGCTestNetParams : public CMainParams 
-{
-public:
-    CDGCTestNetParams()
-    {
-        nDefaultPort = 12025; 
-
-        checkpointData = (CCheckpointData) {
-            boost::assign::map_list_of
-        	(     0, uint256S("0x7497ea1b465eb39f1c8f507bc877078fe016d6fcb6dfad3a64c98dcc6e1e8496")),
-
-            1393183580, // * UNIX timestamp of last checkpoint block
-            30549816,       // * total number of transactions between genesis and last checkpoint
-                        //   (the tx=... number in the SetBestChain debug.log lines)
-            1000.0         // * estimated number of transactions per day after checkpoint
-        };
-
-        vFixedSeeds.clear();
-        vSeeds.clear();        
-    }
-};
-static CDGCTestNetParams dgcTestNetParams;
-
-/**
  * Testnet (v3)
  */
 class CTestNetParams : public CChainParams {
@@ -489,7 +463,7 @@ CChainParams& Params(const std::string& chain)
     if (chain == CBaseChainParams::MAIN)
             return mainParams;
     else if (chain == CBaseChainParams::TESTNET)
-            return dgcTestNetParams;
+            return testNetParams;
     else if (chain == CBaseChainParams::REGTEST)
             return regTestParams;
     else
