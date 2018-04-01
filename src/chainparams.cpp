@@ -143,8 +143,8 @@ public:
         genesis = CreateGenesisBlock(1367867384, 672176, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
   
-        assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
-        assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
+        // assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
+        // assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #2", "game.digitalcoin.co"));
@@ -329,8 +329,8 @@ public:
         //genesis = CreateGenesisBlock(1390666206UL, 3861367235UL, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256S("0x8078c1b044405602d54bb2ddbc2080db5560a1fdf8d835085bb9607c77940840"));
-        assert(genesis.hashMerkleRoot == uint256S("0xd8776ed7710a3e8face66c59fbd7cae72f03e8bab1f7228e711a4ececfb0c358"));
+        // assert(consensus.hashGenesisBlock == uint256S("0x8078c1b044405602d54bb2ddbc2080db5560a1fdf8d835085bb9607c77940840"));
+        // assert(genesis.hashMerkleRoot == uint256S("0xd8776ed7710a3e8face66c59fbd7cae72f03e8bab1f7228e711a4ececfb0c358"));
 
 
 //        assert(consensus.hashGenesisBlock == uint256S("0x00000bafbc94add76cb75e2ec92894837288a481e5c005f6563d91623bf8bc2c"));
