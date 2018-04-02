@@ -129,7 +129,7 @@ void SelectParams(const std::string& chain);
 
 inline bool TestNet() {
     // Note: it's deliberate that this returns "false" for regression test mode.
-    return Params().NetworkIDString() == CBaseChainParams::TESTNET;
+    return false;//Params().NetworkIDString() == CBaseChainParams::TESTNET;
 }
 
 inline bool RegTest() {
