@@ -74,7 +74,7 @@ public:
     QString getThirdPartyTxUrls() { return strThirdPartyTxUrls; }
     bool getProxySettings(QNetworkProxy& proxy) const;
     bool getCoinControlFeatures() { return fCoinControlFeatures; }
-    bool getShowAdvancedPSUI() { return fShowAdvancedPSUI; }
+    bool getShowAdvancedPSUI() { return false;/*fShowAdvancedPSUI;*/ }
     const QString& getOverriddenByCommandLine() { return strOverriddenByCommandLine; }
 
     /* Restart flag helper */
