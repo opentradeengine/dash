@@ -297,11 +297,11 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1522624823, 1824287, 0x1e0ffff0, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1524170999, 530559, 0x1e0ffff0, 1, 50 * COIN);
         //genesis = CreateGenesisBlock(1390666206UL, 3861367235UL, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256S("0x42aa6e40d2e346072c2bdb670b8b21ede2ff1a4c80b1f03333997099e8749576"));
+        assert(consensus.hashGenesisBlock == uint256S("0x5274a0a9804343bdd90d84a579c480a4fff8dfed5e46e90d14a0abc3fbb66d76"));
         assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
 
@@ -311,7 +311,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
-         vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "brekki.fr")); 
+ //        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "brekki.fr")); 
  //       vSeeds.push_back(CDNSSeedData("digitalcoindot.io",  "testnet-seed.digitalcoindot.io"));
  //       vSeeds.push_back(CDNSSeedData("masternode.io", "test.dnsseed.masternode.io"));
 
@@ -343,12 +343,12 @@ public:
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-        	(     0, uint256S("0x42aa6e40d2e346072c2bdb670b8b21ede2ff1a4c80b1f03333997099e8749576")),
+        	(     0, uint256S("0x5274a0a9804343bdd90d84a579c480a4fff8dfed5e46e90d14a0abc3fbb66d76")),
 
-            1522624823, // * UNIX timestamp of last checkpoint block
+            1524170999, // * UNIX timestamp of last checkpoint block
             0,       // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            1000.0         // * estimated number of transactions per day after checkpoint
+            1000         // * estimated number of transactions per day after checkpoint
         };
 
     }
