@@ -58,7 +58,7 @@ using namespace std;
 /**
  * Global state
  */
-static const int V3_FORK = 1028000;
+static const int V3_FORK = 10;
 
 CCriticalSection cs_main;
 
