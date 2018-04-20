@@ -311,7 +311,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
- //        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "brekki.fr")); 
+        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "dgc.testnet.brekki.fr")); 
  //       vSeeds.push_back(CDNSSeedData("digitalcoindot.io",  "testnet-seed.digitalcoindot.io"));
  //       vSeeds.push_back(CDNSSeedData("masternode.io", "test.dnsseed.masternode.io"));
 
