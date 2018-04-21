@@ -10,7 +10,7 @@
 #include <map>
 #include <string>
 #include "bignum.h"
-
+#include "util.h"
 
 enum {
     ALGO_SHA256D = 0,
@@ -31,16 +31,31 @@ enum
 
 inline int GetAlgo(int nVersion)
 {
-    switch (nVersion & BLOCK_VERSION_ALGO)
+    int algo = ALGO_SCRYPT;
+
+int masked = nVersion & BLOCK_VERSION_ALGO;
+
+    switch (masked)
     {
         case 1:
-            return ALGO_SCRYPT;
+          LogPrintf("DGC GetAlgo SCRYPT, nVersion %d  -  Masked %d \n", nVersion, masked);
+            algo = ALGO_SCRYPT; 
+            break;
         case BLOCK_VERSION_SHA256D:
-            return ALGO_SHA256D;
+          LogPrintf("DGC GetAlgo SHA256, nVersion %d  -  Masked %d \n", nVersion, masked);
+            algo = ALGO_SHA256D; 
+            break;
         case BLOCK_VERSION_X11:
-            return ALGO_X11;
+          LogPrintf("DGC GetAlgo X11, nVersion %d  -  Masked %d \n", nVersion, masked);
+            algo = ALGO_X11; 
+            break;
+            default : 
+          LogPrintf("DGC GetAlgo Failed, nVersion %d  -  Masked %d \n", nVersion, masked);
+              
+            break;
+
     }
-    return ALGO_SCRYPT;
+    return algo;
 }
 
 inline std::string GetAlgoName(int Algo)
