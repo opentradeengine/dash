@@ -3506,9 +3506,9 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
    
     // Check for duplicate
     uint256 hash = block.GetHash();
-    if (mapBlockIndex.count(hash))
+/*    if (mapBlockIndex.count(hash))
         return state.Invalid(error("AcceptBlock() : block already in mapBlockIndex"), 0, "duplicate");
-
+*/
     // Get prev block index
     CBlockIndex* pindexPrev = NULL;
     int nHeightForVerif = 0;
@@ -3521,7 +3521,7 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
         nHeightForVerif = pindexPrev->nHeight+1;
 
         // Check count of sequence of the same algorithm
-        if (TestNet() || (nHeightForVerif > V3_FORK))
+        if (TestNet() || (nHeightForVerif > /*V3_FORK*/125 ))
         {
             int nAlgo = block.GetAlgo();
             int nAlgoCount = 1;
