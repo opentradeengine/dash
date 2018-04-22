@@ -3468,7 +3468,7 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
     if (!AcceptBlockHeader(block, state, chainparams, &pindex))
         return false;
 
-    // Try to process all requested blocks that we don't have, but only
+	// Try to process all requested blocks that we don't have, but only
     // process an unrequested block if it's new and has enough work to
     // advance our tip, and isn't too many blocks ahead.
     bool fAlreadyHave = pindex->nStatus & BLOCK_HAVE_DATA;
@@ -3503,8 +3503,50 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
         return false;
     }
 
-    int nHeight = pindex->nHeight;
    
+    // Check for duplicate
+    uint256 hash = block.GetHash();
+    if (mapBlockIndex.count(hash))
+        return state.Invalid(error("AcceptBlock() : block already in mapBlockIndex"), 0, "duplicate");
+
+    // Get prev block index
+    CBlockIndex* pindexPrev = NULL;
+    int nHeightForVerif = 0;
+    if (hash != Params().GetConsensus().hashGenesisBlock) {
+	// Check Previous Block
+        auto mi = mapBlockIndex.find(block.hashPrevBlock);
+        if (mi == mapBlockIndex.end())
+            return state.DoS(10, error("AcceptBlock() : prev block not found"), 0, "bad-prevblk");
+        pindexPrev = (*mi).second;
+        nHeightForVerif = pindexPrev->nHeight+1;
+
+        // Check count of sequence of the same algorithm
+        if (TestNet() || (nHeightForVerif > V3_FORK))
+        {
+            int nAlgo = block.GetAlgo();
+            int nAlgoCount = 1;
+            CBlockIndex* piPrev = pindexPrev;
+            while (piPrev && (nAlgoCount <= MAX_BLOCK_ALGO_COUNT))
+            {
+                if (piPrev->GetAlgo() != nAlgo)
+                    break;
+                nAlgoCount++;
+                piPrev = piPrev->pprev;
+            }
+            if (nAlgoCount > MAX_BLOCK_ALGO_COUNT)
+            {
+                return state.DoS(100, error("AcceptBlock() : Too Many Blocks From the Same Algo"), REJECT_INVALID, "algo-toomany");
+            }
+        }
+
+        LogPrintf("Checking Block %d with Algo %d \n", nHeightForVerif, block.GetAlgo());
+        if (block.GetAlgo() == ALGO_SCRYPT)  { LogPrintf("Algo is Scrypt \n ");}
+        if (block.GetAlgo() == ALGO_SHA256D) { LogPrintf("Algo is SHA256 \n");}
+        if (block.GetAlgo() == ALGO_X11)     { LogPrintf("Algo is X11 \n");}
+    }
+
+    int nHeight = pindex->nHeight;
+    
     // Write block to history file
     try {
         unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);
