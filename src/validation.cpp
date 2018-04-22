@@ -1887,7 +1887,7 @@ void ThreadScriptCheck() {
 // Protected by cs_main
 VersionBitsCache versionbitscache;
 
-int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params, bool fAssumeMasternodeIsUpgraded)
+int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Params& params,int algo, bool fAssumeMasternodeIsUpgraded)
 {
     LOCK(cs_main);
     int32_t nVersion = VERSIONBITS_TOP_BITS;
@@ -1915,6 +1915,25 @@ int32_t ComputeBlockVersion(const CBlockIndex* pindexPrev, const Consensus::Para
         if (state == THRESHOLD_LOCKED_IN || state == THRESHOLD_STARTED) {
             nVersion |= VersionBitsMask(params, (Consensus::DeploymentPos)i);
         }
+    }
+
+
+
+   // LogPrintf("Creating new block with algo : %d\n",algo);
+    switch (algo)
+    {
+        case ALGO_SCRYPT:
+            nVersion |=  BLOCK_VERSION_SCRYPT;
+            break;
+        case ALGO_SHA256D:
+            nVersion |= BLOCK_VERSION_SHA256D;
+            break;
+        case ALGO_X11:
+            nVersion |= BLOCK_VERSION_X11;
+            break;
+        default:
+            error("CreateNewBlock: bad algo");
+            return NULL;
     }
 
     return nVersion;
@@ -1950,7 +1969,7 @@ public:
     {
         return ((pindex->nVersion & VERSIONBITS_TOP_MASK) == VERSIONBITS_TOP_BITS) &&
                ((pindex->nVersion >> bit) & 1) != 0 &&
-               ((ComputeBlockVersion(pindex->pprev, params, true) >> bit) & 1) == 0;
+               ((ComputeBlockVersion(pindex->pprev, params, pindex->GetAlgo(), true) >> bit) & 1) == 0;
     }
 };
 
@@ -3526,7 +3545,7 @@ bool ProcessNewBlock(const CChainParams& chainparams, const CBlock* pblock, bool
 {
     {
         LOCK(cs_main);
-
+           
         // Store to disk
         CBlockIndex *pindex = NULL;
         if (fNewBlock) *fNewBlock = false;

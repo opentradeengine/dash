@@ -21,12 +21,14 @@ enum {
 enum
 {
     // primary version
-    BLOCK_VERSION_DEFAULT        = 1,
 
     // algo
     BLOCK_VERSION_ALGO           = (7 << 9),
     BLOCK_VERSION_SHA256D        = (1 << 9),
-    BLOCK_VERSION_X11      	 = (2 << 9),
+    BLOCK_VERSION_X11      	     = (2 << 9),
+    BLOCK_VERSION_SCRYPT         = 1,
+
+    
 };
 
 inline int GetAlgo(int nVersion)

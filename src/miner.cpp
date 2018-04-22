@@ -88,26 +88,8 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         return NULL;
     CBlock *pblock = &pblocktemplate->block; // pointer for convenience
 
-    // Set block version
-    pblock->nVersion = BLOCK_VERSION_DEFAULT;
     CBlockIndex* pindexPrev = chainActive.Tip();
 
-    //int algo=ALGO_X11;// dgc c'est tres douteux !!, en plus maintenant c'est en argument...
-
-    switch (algo)
-    {
-        case ALGO_SCRYPT:
-            break;
-        case ALGO_SHA256D:
-            pblock->nVersion |= BLOCK_VERSION_SHA256D;
-            break;
-        case ALGO_X11:
-            pblock->nVersion |= BLOCK_VERSION_X11;
-            break;
-        default:
-            error("CreateNewBlock: bad algo");
-            return NULL;
-    }
 
     // Create coinbase tx
     CMutableTransaction txNew;
@@ -162,7 +144,11 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
         pblock->vtx.push_back(txNew);
         pblocktemplate->vTxFees.push_back(-1); // updated at end
         pblocktemplate->vTxSigOps.push_back(-1); // updated at end
-        pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus());
+        pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(),algo);
+       
+        if(pblock->nVersion==NULL)
+            return NULL;
+
         // -regtest only: allow overriding block.nVersion with
         // -blockversion=N to test forking scenarios
         if (chainparams.MineBlocksOnDemand())
