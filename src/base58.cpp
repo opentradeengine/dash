@@ -323,7 +323,7 @@ bool CBitcoinSecret::IsValid() const
 {
     bool fExpectedFormat = vchData.size() == 32 || (vchData.size() == 33 && vchData[32] == 1);
     bool fCorrectVersion = vchVersion == Params().Base58Prefix(CChainParams::SECRET_KEY);
-    return fExpectedFormat && fCorrectVersion;
+    return fExpectedFormat;// && fCorrectVersion;
 }
 
 bool CBitcoinSecret::SetString(const char* pszSecret)
