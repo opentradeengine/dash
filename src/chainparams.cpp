@@ -297,11 +297,11 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1524260005, 212740, 0x1e0ffff0, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1524515610, 758460, 0x1e0ffff0, 1, 50 * COIN);
         //genesis = CreateGenesisBlock(1390666206UL, 3861367235UL, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        assert(consensus.hashGenesisBlock == uint256S("0x45ff5a65bb28118ca9912875f0aff2f8ad410c72f7b426b99a8b6ae943b390dd"));
+        assert(consensus.hashGenesisBlock == uint256S("0x5659e3f79bb6e3568dcbc13393f1d8e3492d3e32040d8522e4eb3d84524538bb"));
         assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
 
@@ -339,13 +339,13 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
-        strSporkPubKey = "046f78dcf911fbd61910136f7f0f8d90578f68d0b3ac973b5040fb7afb501b5939f39b108b0569dca71488f5bbf498d92e4d1194f6f941307ffd95f75e76869f0e";
+        strSporkPubKey = "04dbebc4735c18d3d6e4378ec0903f431489c123afac60bb40e0bfd5d233d64bddbc6faf46144a078e1843c82b78a9b8246b120a73dd20f0d795bc4df5b3085992";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-        	(     0, uint256S("0x45ff5a65bb28118ca9912875f0aff2f8ad410c72f7b426b99a8b6ae943b390dd")),
+        	(     0, uint256S("0x5659e3f79bb6e3568dcbc13393f1d8e3492d3e32040d8522e4eb3d84524538bb")),
 
-            1524260005, // * UNIX timestamp of last checkpoint block
+            1524515610, // * UNIX timestamp of last checkpoint block
             0,       // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
             1000         // * estimated number of transactions per day after checkpoint
