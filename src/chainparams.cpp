@@ -162,7 +162,7 @@ public:
         // Digitalcoin script addresses start with '7'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
         // Digitalcoin private keys start with '7' or 'X'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,0x9e);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
         // Digitalcoin BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
         // Digitalcoin BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
@@ -320,7 +320,7 @@ public:
         // Digitalcoin script addresses start with '7'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
         // Digitalcoin private keys start with '7' or 'X'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,0x9e);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
         // Digitalcoin BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
         // Digitalcoin BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
@@ -444,7 +444,7 @@ public:
         // Digitalcoin script addresses start with '7'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,5);
         // Digitalcoin private keys start with '7' or 'X'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,0x9e);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         // Digitalcoin BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
         // Digitalcoin BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
