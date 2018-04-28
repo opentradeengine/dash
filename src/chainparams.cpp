@@ -120,10 +120,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 3226; // 80% of 4032
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00"); // 0
+        consensus.nMinimumChainWork = uint256S("0x0000100000000000000000000000000000000000000001117564a5d286356cb6"); // 0
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00"); // 0
+        consensus.defaultAssumeValid = uint256S("0x00000000000000a246455a317fe838094c0aff7f43f0d7e5a9d8110ba73680d7"); // 0
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -277,10 +277,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 50; // 50% of 100
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00"); // 37900
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000001f001a5"); // 37900
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00"); // 37900
+        consensus.defaultAssumeValid = uint256S("0x0000000013ba8023f702228d199b3e4a4af294e30766e6c7aca1099faf8e6eeb"); // 37900
         /*
         pchMessageStart[0] = 0xce;
         pchMessageStart[1] = 0xe2;
@@ -294,7 +294,7 @@ public:
         vAlertPubKey = ParseHex("04016c44069c3152982413d3ba3bf262a3a4d3ddad859ba78e0d744f5c67c2205d2aa2122e6c62b6310dad2d1e2f7e39028455ff1dbb26511c60fc96c8b4560c43");
         nDefaultPort = 12025;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
-        nDelayGetHeadersTime = 24 * 60 * 60;
+        nDelayGetHeadersTime = 30 * 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1524863865, 1363366, 0x1e0ffff0, 1, 50 * COIN);
