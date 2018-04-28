@@ -3521,7 +3521,7 @@ static bool AcceptBlock(const CBlock& block, CValidationState& state, const CCha
         nHeightForVerif = pindexPrev->nHeight+1;
 
         // Check count of sequence of the same algorithm
-        if (TestNet() || (nHeightForVerif > /*V3_FORK*/125 ))
+        if (TestNet() || (nHeightForVerif > V3_FORK))
         {
             int nAlgo = block.GetAlgo();
             int nAlgoCount = 1;
