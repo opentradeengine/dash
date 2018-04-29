@@ -131,7 +131,7 @@ bool IsBlockValueValid(const CBlock& block, int nBlockHeight, CAmount blockRewar
 
 bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount blockReward)
 {
-            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : A");
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : A\n");
     
     if(!masternodeSync.IsSynced()) {
         //there is no budget data to use to check anything, let's just accept the longest chain
@@ -141,13 +141,13 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
 
     // we are still using budgets, but we have no data about them anymore,
     // we can only check masternode payments
-            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : B");
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : B\n");
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
 
 
     if(nBlockHeight < consensusParams.nSuperblockStartBlock) {
-            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : C");
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : C\n");
 
         if(mnpayments.IsTransactionValid(txNew, nBlockHeight)) {
             LogPrint("mnpayments", "IsBlockPayeeValid -- Valid masternode payment at height %d: %s", nBlockHeight, txNew.ToString());
@@ -179,18 +179,20 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
 
     // superblocks started
     // SEE IF THIS IS A VALID SUPERBLOCK
-            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : C");
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : D\n");
 
 
     if(sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)) {
         if(CSuperblockManager::IsSuperblockTriggered(nBlockHeight)) {
             if(CSuperblockManager::IsValid(txNew, nBlockHeight, blockReward)) {
                 LogPrint("gobject", "IsBlockPayeeValid -- Valid superblock at height %d: %s", nBlockHeight, txNew.ToString());
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : E\n");
                 return true;
             }
 
             LogPrintf("IsBlockPayeeValid -- ERROR: Invalid superblock detected at height %d: %s", nBlockHeight, txNew.ToString());
             // should NOT allow such superblocks, when superblocks are enabled
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : F\n");
             return false;
         }
         // continue validation, should pay MN
@@ -203,15 +205,18 @@ bool IsBlockPayeeValid(const CTransaction& txNew, int nBlockHeight, CAmount bloc
     // IF THIS ISN'T A SUPERBLOCK OR SUPERBLOCK IS INVALID, IT SHOULD PAY A MASTERNODE DIRECTLY
     if(mnpayments.IsTransactionValid(txNew, nBlockHeight)) {
         LogPrint("mnpayments", "IsBlockPayeeValid -- Valid masternode payment at height %d: %s", nBlockHeight, txNew.ToString());
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : G\n");
         return true;
     }
 
     if(sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
         LogPrintf("IsBlockPayeeValid -- ERROR: Invalid masternode payment detected at height %d: %s", nBlockHeight, txNew.ToString());
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : H\n");
         return false;
     }
 
     LogPrintf("IsBlockPayeeValid -- WARNING: Masternode payment enforcement is disabled, accepting any payee\n");
+            LogPrintf("DGC DEBUGBLOCK : IsBlockPayeeValid : I\n");
     return true;
 }
 

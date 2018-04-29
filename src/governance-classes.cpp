@@ -249,6 +249,8 @@ void CGovernanceTriggerManager::CleanAndRemove()
 
 std::vector<CSuperblock_sptr> CGovernanceTriggerManager::GetActiveTriggers()
 {
+            LogPrintf("DGC DEBUGBLOCK : GetActiveTriggers : A\n");
+
     AssertLockHeld(governance.cs);
     std::vector<CSuperblock_sptr> vecResults;
 
@@ -269,6 +271,7 @@ std::vector<CSuperblock_sptr> CGovernanceTriggerManager::GetActiveTriggers()
 
     DBG( cout << "GetActiveTriggers: vecResults.size() = " << vecResults.size() << endl; );
 
+            LogPrintf("DGC DEBUGBLOCK : GetActiveTriggers : B %d \n", vecResults.size());
     return vecResults;
 }
 
