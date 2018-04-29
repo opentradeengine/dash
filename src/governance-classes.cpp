@@ -280,10 +280,15 @@ std::vector<CSuperblock_sptr> CGovernanceTriggerManager::GetActiveTriggers()
 
 bool CSuperblockManager::IsSuperblockTriggered(int nBlockHeight)
 {
+                LogPrintf("DGC DEBUGBLOCK : IsTrigger : A\n");
+
     LogPrint("gobject", "CSuperblockManager::IsSuperblockTriggered -- Start nBlockHeight = %d\n", nBlockHeight);
     if (!CSuperblock::IsValidBlockHeight(nBlockHeight)) {
-        return false;
+                LogPrintf("DGC DEBUGBLOCK : IsTrigger : B\n");
+                        return false;
     }
+
+                LogPrintf("DGC DEBUGBLOCK : IsTrigger : C\n");
 
     LOCK(governance.cs);
     // GET ALL ACTIVE TRIGGERS
@@ -338,6 +343,8 @@ bool CSuperblockManager::IsSuperblockTriggered(int nBlockHeight)
             DBG( cout << "IsSuperblockTriggered No fCachedFunding, continuing" << endl; );
         }
     }
+    
+    LogPrintf("DGC DEBUGBLOCK : IsTrigger : D\n");
 
     return false;
 }
