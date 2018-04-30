@@ -252,8 +252,8 @@ public:
         consensus.bnProofOfWorkLimit[ALGO_SHA256D] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
         consensus.bnProofOfWorkLimit[ALGO_SCRYPT]  = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
         consensus.bnProofOfWorkLimit[ALGO_X11] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Digitalcoin: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Digitalcoin: 2.5 minutes
+        consensus.nPowTargetTimespan = 108*40; // Digitalcoin: 1 day
+        consensus.nPowTargetSpacing = 40; // Digitalcoin: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 4001; // nPowKGWHeight >= nPowDGWHeight means "no KGW"
