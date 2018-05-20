@@ -40,19 +40,19 @@ int masked = nVersion & BLOCK_VERSION_ALGO;
     switch (masked)
     {
         case 1:
-          LogPrintf("DGC GetAlgo SCRYPT, nVersion %d  -  Masked %d \n", nVersion, masked);
+    //      LogPrintf("DGC GetAlgo SCRYPT, nVersion %d  -  Masked %d \n", nVersion, masked);
             algo = ALGO_SCRYPT; 
             break;
         case BLOCK_VERSION_SHA256D:
-          LogPrintf("DGC GetAlgo SHA256, nVersion %d  -  Masked %d \n", nVersion, masked);
+   //       LogPrintf("DGC GetAlgo SHA256, nVersion %d  -  Masked %d \n", nVersion, masked);
             algo = ALGO_SHA256D; 
             break;
         case BLOCK_VERSION_X11:
-          LogPrintf("DGC GetAlgo X11, nVersion %d  -  Masked %d \n", nVersion, masked);
+    //      LogPrintf("DGC GetAlgo X11, nVersion %d  -  Masked %d \n", nVersion, masked);
             algo = ALGO_X11; 
             break;
             default : 
-          LogPrintf("DGC GetAlgo Failed, nVersion %d  -  Masked %d \n", nVersion, masked);
+   //       LogPrintf("DGC GetAlgo Failed, nVersion %d  -  Masked %d \n", nVersion, masked);
               
             break;
 
