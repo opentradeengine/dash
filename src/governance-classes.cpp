@@ -313,7 +313,7 @@ bool CSuperblockManager::IsSuperblockTriggered(int nBlockHeight)
 
         // note : 12.1 - is epoch calculation correct?
 
-        if(nBlockHeight != pSuperblock->GetBlockStart()) {
+  /*      if(nBlockHeight != pSuperblock->GetBlockStart()) {
             LogPrint("gobject", "CSuperblockManager::IsSuperblockTriggered -- block height doesn't match nBlockHeight = %d, blockStart = %d, continuing\n",
                      nBlockHeight,
                      pSuperblock->GetBlockStart());
@@ -322,7 +322,7 @@ bool CSuperblockManager::IsSuperblockTriggered(int nBlockHeight)
                  << ", superblock->GetBlockStart() = " << pSuperblock->GetBlockStart()
                  << endl; );
             continue;
-        }
+        }*/
 
         // MAKE SURE THIS TRIGGER IS ACTIVE VIA FUNDING CACHE FLAG
 
