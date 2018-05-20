@@ -366,7 +366,7 @@ bool CSuperblockManager::GetBestSuperblock(CSuperblock_sptr& pSuperblockRet, int
             continue;
         }
 
-        if(nBlockHeight != pSuperblock->GetBlockStart()) {
+        if(nBlockHeight < pSuperblock->GetBlockStart()) {
             DBG( cout << "GetBestSuperblock Not the target block, continuing" << endl; );
             continue;
         }
