@@ -313,7 +313,7 @@ bool CSuperblockManager::IsSuperblockTriggered(int nBlockHeight)
 
         // note : 12.1 - is epoch calculation correct?
 
-        if(nBlockHeight < pSuperblock->GetBlockStart()) {
+        if(nBlockHeight != pSuperblock->GetBlockStart()) {
             LogPrint("gobject", "CSuperblockManager::IsSuperblockTriggered -- block height doesn't match nBlockHeight = %d, blockStart = %d, continuing\n",
                      nBlockHeight,
                      pSuperblock->GetBlockStart());
@@ -366,7 +366,7 @@ bool CSuperblockManager::GetBestSuperblock(CSuperblock_sptr& pSuperblockRet, int
             continue;
         }
 
-        if(nBlockHeight < pSuperblock->GetBlockStart()) {
+        if(nBlockHeight != pSuperblock->GetBlockStart()) {
             DBG( cout << "GetBestSuperblock Not the target block, continuing" << endl; );
             continue;
         }
