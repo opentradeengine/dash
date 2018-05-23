@@ -14,7 +14,7 @@
 #include <vector>
 
 /** DGC V3 Hard Fork Block */
-static const int V3_FORK = 1028000;
+static const int V3_FORK = 0;//1028000;
 static const int MAX_BLOCK_ALGO_COUNT = 3;
 
 /* Other DGC Fork Blocks */

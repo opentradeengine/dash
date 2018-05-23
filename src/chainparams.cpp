@@ -235,11 +235,11 @@ public:
         consensus.nMasternodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 240;
-        consensus.nBudgetPaymentsCycleBlocks = 500;
+        consensus.nBudgetPaymentsCycleBlocks = 25;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nBudgetProposalEstablishingTime = 60*20;
         consensus.nSuperblockStartBlock = 250; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
-        consensus.nSuperblockCycle = 500; // Superblocks can be issued hourly on testnet
+        consensus.nSuperblockCycle = 25; // Superblocks can be issued hourly on testnet
         consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 500;
         consensus.nMasternodeMinimumConfirmations = 1;
