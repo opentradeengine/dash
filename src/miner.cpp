@@ -98,6 +98,14 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
     txNew.vout.resize(1);
     txNew.vout[0].scriptPubKey = scriptPubKeyIn;
 
+
+    // Create coinbase tx
+    CMutableTransaction txNew2;
+    txNew2.vin.resize(1);
+    txNew2.vin[0].prevout.SetNull();
+    txNew2.vout.resize(1);
+    txNew2.vout[0].scriptPubKey = scriptPubKeyIn;
+
     // Largest block you're willing to create:
     unsigned int nBlockMaxSize = GetArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
     // Limit to between 1K and MAX_BLOCK_SIZE-1K for sanity:
@@ -142,6 +150,8 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         // Add our coinbase tx as first transaction
         pblock->vtx.push_back(txNew);
+        pblock->vtx.push_back(txNew2);
+        
         pblocktemplate->vTxFees.push_back(-1); // updated at end
         pblocktemplate->vTxSigOps.push_back(-1); // updated at end
         pblock->nVersion = ComputeBlockVersion(pindexPrev, chainparams.GetConsensus(),algo);
@@ -304,7 +314,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         // Update coinbase transaction with additional info about masternode and governance payments,
         // get some info back to pass to getblocktemplate
-        FillBlockPayments(txNew, nHeight, blockReward, pblock->txoutMasternode, pblock->voutSuperblock);
+        FillBlockPayments(txNew,txNew2, nHeight, blockReward, pblock->txoutMasternode, pblock->voutSuperblock);
         // LogPrintf("CreateNewBlock -- nBlockHeight %d blockReward %lld txoutMasternode %s txNew %s",
         //             nHeight, blockReward, pblock->txoutMasternode.ToString(), txNew.ToString());
 
@@ -314,6 +324,7 @@ CBlockTemplate* CreateNewBlock(const CChainParams& chainparams, const CScript& s
 
         // Update block coinbase
         pblock->vtx[0] = txNew;
+        pblock->vtx[1] = txNew2;
         pblocktemplate->vTxFees[0] = -nFees;
 
         // Fill in header
