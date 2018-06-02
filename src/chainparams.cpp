@@ -91,12 +91,12 @@ public:
         consensus.nMajorityWindow = 1000;
         consensus.BIP34Height = 1;
         consensus.BIP34Hash = uint256S("0x000007d91d1254d60e2dd1ae580383070a4ddffa4c64c2eeb4a2f9ecc0414343");
-        consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
+        consensus.powLimit = uint256S("0000100000000000000000000000000000000000000000000000000000000000");
         consensus.nPowTargetTimespan = 108*40;//24 * 60 * 60; // Digitalcoin: 1 day
         consensus.nPowTargetSpacing = 40;//2.5 * 60; // Digitalcoin: 2.5 minutes
-        consensus.bnProofOfWorkLimit[ALGO_SHA256D] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
-        consensus.bnProofOfWorkLimit[ALGO_SCRYPT]  = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
-        consensus.bnProofOfWorkLimit[ALGO_X11] = CBigNum(uint256S("00000fffff000000000000000000000000000000000000000000000000000000"));
+        consensus.bnProofOfWorkLimit[ALGO_SHA256D] = CBigNum(uint256S("0000100000000000000000000000000000000000000000000000000000000000"));
+        consensus.bnProofOfWorkLimit[ALGO_SCRYPT]  = CBigNum(uint256S("0000100000000000000000000000000000000000000000000000000000000000"));
+        consensus.bnProofOfWorkLimit[ALGO_X11] = CBigNum(uint256S("0000100000000000000000000000000000000000000000000000000000000000"));
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 15200;
