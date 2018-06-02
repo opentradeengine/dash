@@ -1288,6 +1288,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
 
     CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
 
+    if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)==false)
+        nSuperblockPart=0;
+
     return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
