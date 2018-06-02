@@ -146,12 +146,16 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
         assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
-        vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
+/*        vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #2", "game.digitalcoin.co"));
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #3", "dev.digitalcoin.co"));
         vSeeds.push_back(CDNSSeedData("ahmed seed #1", "178.62.28.81"));
-        vSeeds.push_back(CDNSSeedData("bitnode baritus", "212.24.97.214"));
-/*
+        vSeeds.push_back(CDNSSeedData("bitnode baritus", "212.24.97.214")); */
+       
+        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "dgc.testnet.brekki.fr")); 
+
+
+/*old dash nodes
         vSeeds.push_back(CDNSSeedData("digitalcoin.org", "dnsseed.digitalcoin.org"));
         vSeeds.push_back(CDNSSeedData("digitalcoindot.io", "dnsseed.digitalcoindot.io"));
         vSeeds.push_back(CDNSSeedData("masternode.io", "dnsseed.masternode.io"));
@@ -181,7 +185,7 @@ public:
 
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
-        strSporkPubKey = "04549ac134f694c0243f503e8c8a9a986f5de6610049c40b07816809b0d1d06a21b07be27b9bb555931773f62ba6cf35a25fd52f694d4e1106ccd237a7bb899fdd";
+        strSporkPubKey = "0419fb74e341a19c66e27a3ef642f6ecaa8eaad487d069a322a5b0c848d339ed6aa2f5d976c12efa934b53bb2daf5999dd2bfd08fb7788f9a4cd4c09e28573bb0d";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
