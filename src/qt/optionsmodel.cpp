@@ -92,7 +92,7 @@ void OptionsModel::Init(bool resetSettings)
         settings.setValue("digits", "2");
 
     if (!settings.contains("fShowMasternodesTab"))
-        settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
+        settings.setValue("fShowMasternodesTab", true);
 
     if (!settings.contains("fShowAdvancedPSUI"))
         settings.setValue("fShowAdvancedPSUI", false);
