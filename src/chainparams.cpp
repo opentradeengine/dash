@@ -78,10 +78,10 @@ public:
         consensus.nMasternodePaymentsIncreasePeriod = 0;//DGC : NEVER USED ANYMORE  // 17280 - actual historical value
         consensus.nInstantSendKeepLock = 24;
         consensus.nBudgetPaymentsStartBlock = 3000000; // 328008; // actual historical value
-        consensus.nBudgetPaymentsCycleBlocks = 500//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nBudgetPaymentsCycleBlocks = 500;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24;//NOT USED
-        consensus.nSuperblockCycle = 500//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nSuperblockCycle = 500;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nSuperblockStartBlock = 3000000+(consensus.nSuperblockCycle*2); // 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
