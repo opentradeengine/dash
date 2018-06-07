@@ -315,7 +315,7 @@ unsigned int GetNextWorkRequiredV2(const CBlockIndex* pindexLast, const CBlockHe
 
     // Genesis block
 
-    if (pindexLast == NULL || (pindexLast->nHeight >= 3291806 && pindexLast->nHeight< 3291818))
+    if (pindexLast == NULL || (pindexLast->nHeight >= 3301556 && pindexLast->nHeight < 3301560))
         return nProofOfWorkLimit;
 
     // find first block in averaging interval
