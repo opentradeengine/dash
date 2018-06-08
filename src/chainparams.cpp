@@ -83,7 +83,7 @@ public:
         consensus.nBudgetProposalEstablishingTime = 60*60*24;//NOT USED
         consensus.nSuperblockCycle = 500;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nSuperblockStartBlock = 3294560+1000; // 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
-        consensus.nGovernanceMinQuorum = 10;
+        consensus.nGovernanceMinQuorum = 1;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 10;
         consensus.nMajorityEnforceBlockUpgrade = 750;
