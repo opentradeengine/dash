@@ -81,8 +81,8 @@ public:
         consensus.nBudgetPaymentsCycleBlocks = 500;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
         consensus.nBudgetPaymentsWindowBlocks = 100;
         consensus.nBudgetProposalEstablishingTime = 60*60*24;//NOT USED
-        consensus.nSuperblockCycle = 500;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
-        consensus.nSuperblockStartBlock = 3294560+1000; // 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
+        consensus.nSuperblockCycle = 50000;//16616; // ~(60*24*30)/2.6, actual number of blocks per month is 200700 / 12 = 16725
+        consensus.nSuperblockStartBlock = 3250000; // 614820; // The block at which 12.1 goes live (end of final 12.0 budget cycle)
         consensus.nGovernanceMinQuorum = 10;
         consensus.nGovernanceFilterElements = 20000;
         consensus.nMasternodeMinimumConfirmations = 10;
@@ -146,21 +146,14 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
         assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
-/*        vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
+    /*    vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #2", "game.digitalcoin.co"));
         vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #3", "dev.digitalcoin.co"));
         vSeeds.push_back(CDNSSeedData("ahmed seed #1", "178.62.28.81"));
-        vSeeds.push_back(CDNSSeedData("bitnode baritus", "212.24.97.214")); */
-       
-        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "dgc.testnet.brekki.fr")); 
+        vSeeds.push_back(CDNSSeedData("bitnode baritus", "212.24.97.214")); 
+  */
 
 
-/*old dash nodes
-        vSeeds.push_back(CDNSSeedData("digitalcoin.org", "dnsseed.digitalcoin.org"));
-        vSeeds.push_back(CDNSSeedData("digitalcoindot.io", "dnsseed.digitalcoindot.io"));
-        vSeeds.push_back(CDNSSeedData("masternode.io", "dnsseed.masternode.io"));
-        vSeeds.push_back(CDNSSeedData("digitalcoinpay.io", "dnsseed.digitalcoinpay.io"));
-*/
         // Digitalcoin addresses start with 'X'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,30);
         // Digitalcoin script addresses start with '7'
@@ -216,9 +209,10 @@ public:
         ( 1010000, uint256S("0xbbe9adc561be01cb37acd71abf42a17e566d05b9cdfed95793db931540805bcf"))
         ( 1020000, uint256S("0xdc51bcc193a2e84bcbdd0448e6e0f5396b4e57c2f43e239d110d1145b147d4c9"))
         ( 1023000, uint256S("0xeaae71b7dae28ab3abfcfa959ae3db50eb4ed93204e36731a54063a4ea8e7218"))
-        ( 1023013, uint256S("0xc328d2a8f8b976769a6b0488cbf6dc641902b6eb7db0995befd58e69679af4f8")),
-        1417684495, // * UNIX timestamp of last checkpoint block
-        1755145,   // * total number of transactions between genesis and last checkpoint
+        ( 1023013, uint256S("0xc328d2a8f8b976769a6b0488cbf6dc641902b6eb7db0995befd58e69679af4f8"))
+        ( 3301439, uint256S("0x91e893e7d89086c092d634ad7075f8b6373588d6001cc44435710bea0c6e7512")),
+        1528399290, // * UNIX timestamp of last checkpoint block
+        4476765,   // * total number of transactions between genesis and last checkpoint
                     //   (the tx=... number in the SetBestChain debug.log lines)
         3840.0     // * estimated number of transactions per day after checkpoint        
         };
@@ -296,7 +290,7 @@ public:
         pchMessageStart[2] = 0xb6;
         pchMessageStart[3] = 0xdb;
         vAlertPubKey = ParseHex("04016c44069c3152982413d3ba3bf262a3a4d3ddad859ba78e0d744f5c67c2205d2aa2122e6c62b6310dad2d1e2f7e39028455ff1dbb26511c60fc96c8b4560c43");
-        nDefaultPort = 12025;
+        nDefaultPort = 17999;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nDelayGetHeadersTime = 30 * 24 * 60 * 60;
         nPruneAfterHeight = 1000;
@@ -315,8 +309,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
 
-        vSeeds.push_back(CDNSSeedData("BREKKI DGC Testnet node", "dgc.testnet.brekki.fr")); 
- //       vSeeds.push_back(CDNSSeedData("digitalcoindot.io",  "testnet-seed.digitalcoindot.io"));
+//       vSeeds.push_back(CDNSSeedData("digitalcoindot.io",  "testnet-seed.digitalcoindot.io"));
  //       vSeeds.push_back(CDNSSeedData("masternode.io", "test.dnsseed.masternode.io"));
 
         // Digitalcoin addresses start with 'X'
