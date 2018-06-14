@@ -21,3 +21,5 @@ FORMS += \
 
 RESOURCES += \
     ../src/qt/digitalcoin.qrc
+
+QT += core

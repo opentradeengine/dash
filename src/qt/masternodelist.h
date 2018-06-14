@@ -10,6 +10,30 @@
 #include <QTimer>
 #include <QWidget>
 
+
+
+#include "ui_masternodelist.h"
+
+#include "activemasternode.h"
+#include "clientmodel.h"
+#include "init.h"
+#include "guiutil.h"
+#include "masternode-sync.h"
+#include "masternodeconfig.h"
+#include "masternodeman.h"
+#include "sync.h"
+#include "wallet/wallet.h"
+#include "walletmodel.h"
+
+#include <QTimer>
+#include <QMessageBox>
+#include "rpc/server.h"
+#include <QString>
+#include <QHostAddress> 
+#include <QHostInfo>
+#include <QtNetwork>
+
+
 #define MY_MASTERNODELIST_UPDATE_SECONDS                 60
 #define MASTERNODELIST_UPDATE_SECONDS                    15
 #define MASTERNODELIST_FILTER_COOLDOWN_SECONDS            3
@@ -38,6 +62,20 @@ public:
     void setWalletModel(WalletModel *walletModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
+
+    //Bloc masternode tool
+    void getConfParam();
+    void writeConfFiles();
+    void checkMasternodeOutputs();
+    void  checkMasternodeAddr();
+    void  checkIsMasternode();
+    void  checkMasternodePrivKey();
+    std::string  makeGenkey();
+    void  makeTransaction();
+    void  checkMasternodeConf();
+    QString  checkExternalIp();
+    void  showMessage(std::string _message, std::string _paramFirst);
+
 
 private:
     QMenu *contextMenu;
@@ -73,5 +111,6 @@ private Q_SLOTS:
     void on_startMissingButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
+    void on_setupMasternodeButton_clicked();
 };
 #endif // MASTERNODELIST_H
