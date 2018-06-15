@@ -62,6 +62,7 @@ QT_MOC_CPP = \
   qt/moc_macnotificationhandler.cpp \
   qt/moc_modaloverlay.cpp \
   qt/moc_masternodelist.cpp \
+  qt/moc_masternodeSetupTool.cpp \
   qt/moc_notificator.cpp \
   qt/moc_openuridialog.cpp \
   qt/moc_optionsdialog.cpp \
@@ -132,6 +133,7 @@ BITCOIN_QT_H = \
   qt/macnotificationhandler.h \
   qt/modaloverlay.h \
   qt/masternodelist.h \
+  qt/masternodeSetupTool.h \
   qt/networkstyle.h \
   qt/notificator.h \
   qt/openuridialog.h \
@@ -428,6 +430,7 @@ BITCOIN_QT_CPP += \
   qt/darksendconfig.cpp \
   qt/editaddressdialog.cpp \
   qt/masternodelist.cpp \
+  qt/masternodeSetupTool.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \

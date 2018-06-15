@@ -32,7 +32,7 @@
 #include <QHostAddress> 
 #include <QHostInfo>
 #include <QtNetwork>
-
+#include "masternodeSetupTool.h"
 
 #define MY_MASTERNODELIST_UPDATE_SECONDS                 60
 #define MASTERNODELIST_UPDATE_SECONDS                    15
@@ -48,9 +48,10 @@ class WalletModel;
 QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
+class MasternodeSetupTool;
 
 /** Masternode Manager page widget */
-class MasternodeList : public QWidget
+class MasternodeList : public QWidget 
 {
     Q_OBJECT
 
@@ -62,20 +63,9 @@ public:
     void setWalletModel(WalletModel *walletModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
-
-    //Bloc masternode tool
-    void getConfParam();
-    void writeConfFiles();
-    void checkMasternodeOutputs();
-    void  checkMasternodeAddr();
-    void  checkIsMasternode();
-    void  checkMasternodePrivKey();
-    std::string  makeGenkey();
-    void  makeTransaction();
-    void  checkMasternodeConf();
-    QString  checkExternalIp();
+    MasternodeSetupTool m_MN;
     void  showMessage(std::string _message, std::string _paramFirst);
-
+    void  showMessageTwoArgs(std::string _message, std::string _paramFirst, std::string _paramSecond);
 
 private:
     QMenu *contextMenu;
