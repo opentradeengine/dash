@@ -55,15 +55,12 @@ public:
     
     //Bloc masternode tool
     std::string getConfParam(std::string _arg);    
-    void writeConfFiles();
-    void checkMasternodeOutputs();
-    void  checkMasternodeAddr();
-    void  checkIsMasternode();
-    void  checkMasternodePrivKey();
-    std::string  makeGenkey();
-    void  makeTransaction();
-    void  checkMasternodeConf();
-    QString  checkExternalIp();
+    void writeDigitalcoinConfFile(string _line);
+    void writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index);
+    std::vector<std::pair<string,string>> checkMasternodeOutputs();
+    std::string makeGenkey();
+    void makeTransaction(WalletModel * walletModel);
+    std::string checkExternalIp();
 
     MasternodeList *  m_qobj=nullptr;
 
