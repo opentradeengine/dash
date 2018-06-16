@@ -251,13 +251,29 @@ SetupMasternodeDialog::~SetupMasternodeDialog()
 
 void SetupMasternodeDialog::on_sendButton_clicked()
 {
+    QString addr = "DB1LMwYsSkgAhAynePoDp3UedgjzWJ1aV4";
+    QString label = "testLabel";
+    QString msg = "testMessage";
+    QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
+    QString strFee = "";
+
+    SendCoinsRecipient recipient(addr, label, 12, msg);
+    recipient.inputType = ONLY_DENOMINATED;
+    recipient.inputType = ALL_COINS;
+    recipient.fUseInstantSend = false;
+
+    QList<SendCoinsRecipient> recipients;
+    recipients.append(recipient);
+    send(recipients, strFee, strFunds);
+
+    /*
         LOCK2(cs_main, wallet->cs_wallet);
     UniValue addressInfo(UniValue::VARR);
 
     addressInfo.push_back(CBitcoinAddress("DB1LMwYsSkgAhAynePoDp3UedgjzWJ1aV4").ToString());
     addressInfo.push_back(ValueFromAmount(12));
 
-    UniValue res = sendtoaddress(addressInfo, false);        
+    UniValue res = sendtoaddress(addressInfo, false);   */     
 }
 
 void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds)
