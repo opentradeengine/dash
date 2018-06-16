@@ -20,14 +20,13 @@
 #include <QHostInfo>
 #include <QtNetwork>
 
-
+#include "optionsmodel.h"
+#include "coincontroldialog.h"
 #include "qobject.h"
 
 CBitcoinAddress GetAccountAddress( string strAccount, bool bForceNew=false);
 
-
-
-QString MasternodeSetupTool::checkExternalIp()
+std::string MasternodeSetupTool::checkExternalIp()
 {
     
     QString info;
@@ -50,14 +49,12 @@ QString MasternodeSetupTool::checkExternalIp()
             if(reply->error() != QNetworkReply::NoError) {
                 //failure
 
-    // Display message box
-    //QMessageBox::information(this, tr("ERROR"),QString("error ..."),QMessageBox::Ok);
+                //Display message box
+                //QMessageBox::information(this, tr("ERROR"),QString("error ..."),QMessageBox::Ok);
 
                 qDebug() << "error: " << reply->error();
                 loop.quit();
             } else { //success
-
-    //QMessageBox::information(this, tr("Looks good!"),tr("waiting..."),QMessageBox::Ok);
 
                 //parse the json reply to extract the IP address
                 QJsonObject jsonObject= QJsonDocument::fromJson(reply->readAll()).object();
@@ -69,15 +66,14 @@ QString MasternodeSetupTool::checkExternalIp()
             }
             //delete reply later to prevent memory leak
             reply->deleteLater();
-    //        a.quit();
+            //a.quit();
         });
-    //QMessageBox::information(this, tr("..."),tr("reequesting"),QMessageBox::Ok);
-        
+       
 
     //QObject::connect(&anObject, SIGNAL(signalToWait()), &loop, SLOT(quit()));
     // Timeout to avoid infite waiting
     QTimer timer;
-    timer.setInterval(20*1000); //10s
+    timer.setInterval(1*1000); //10s
     timer.setSingleShot(true);
     //QObject::connect(&timer, SIGNAL(timeout()), &loop, SLOT(quit()));
     
@@ -90,59 +86,38 @@ QString MasternodeSetupTool::checkExternalIp()
     loop.exec();
     timer.stop();
 
-    m_qobj->showMessage(std::string("So you want to setup your masternode on this IP : %1?"),info.toStdString());
+    // m_qobj->showMessage(std::string("So you want to setup your masternode on this IP : %1?"),info.toStdString());
 
-    return info;
+    return info.toStdString();
 
 }
 
-
-void MasternodeSetupTool::checkMasternodeConf()
+void MasternodeSetupTool::makeTransaction(WalletModel * walletModel)
 {
+
+    CBitcoinAddress mnAddress = GetAccountAddress("Masternode",false);
+
+    QString addr = QString::fromStdString(mnAddress.ToString());
+    QString label = "Masternode Collateral Transaction";
+    QString msg = "Masternode collateral transaction.";
     
-}
+    SendCoinsRecipient recipient(addr, label, 10*100000000, msg);
+    recipient.inputType = ALL_COINS;
+    recipient.fUseInstantSend = false;
 
+    QList<SendCoinsRecipient> recipients;
+    recipients.append(recipient);
+    
+    WalletModelTransaction currentTransaction(recipients);
+    WalletModel::SendCoinsReturn prepareStatus;
+    if (walletModel->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
+        prepareStatus = walletModel->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+    else
+        prepareStatus = walletModel->prepareTransaction(currentTransaction);
 
-void MasternodeSetupTool::makeTransaction()
-{
-    UniValue addressInfo(UniValue::VARR);
-
-    CBitcoinAddress mnAddress = GetAccountAddress("0",false);
-
-
-
-    //if (pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get()) != pwalletMain->mapAddressBook.end())
-    //    addressInfo.push_back(pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get())->second.name);
-
-
-    /*//                    sendtoaddress
-        "\nArguments:\n"
-            "1. \"digitalcoinaddress\" (string, required) The digitalcoin address to send to.\n"
-            "2. \"amount\"      (numeric or string, required) The amount in " + CURRENCY_UNIT + " to send. eg 0.1\n"
-            "3. \"comment\"     (string, optional) A comment used to store what the transaction is for. \n"
-            "                             This is not part of the transaction, just kept in your wallet.\n"
-            "4. \"comment-to\"  (string, optional) A comment to store the name of the person or organization \n"
-            "                             to which you're sending the transaction. This is not part of the \n"
-            "                             transaction, just kept in your wallet.\n"
-            "5. subtractfeefromamount  (boolean, optional, default=false) The fee will be deducted from the amount being sent.\n"
-            "                             The recipient will receive less amount of Digitalcoin than you enter in the amount field.\n"
-            "6. \"use_is\"      (bool, optional) Send this transaction as InstantSend (default: false)\n"
-            "7. \"use_ps\"      (bool, optional) Use anonymized funds only (default: false)\n"
-    */        
-
-    addressInfo.push_back(string("\"\""));
-    addressInfo.push_back("\""+mnAddress.ToString()+"\"");
-    addressInfo.push_back(string("5"));
-
-
-
-    m_qobj->showMessage("destination address : %1",addressInfo[1].get_str());
-    m_qobj->showMessage("amount : %1",addressInfo[1].get_str());
-    m_qobj->showMessage("amount : %1",addressInfo[2].get_str());
-
-    UniValue res = sendfrom(addressInfo, true);
-
-    m_qobj->showMessage("5dgc paid at : %1",res[0].get_str());
+    /*WalletModel::SendCoinsReturn sendStatus = */walletModel->sendCoins(currentTransaction);
+ 
+    //m_qobj->showMessage("5dgc paid at : %1",rpc_result.write());
 }
 
 std::string MasternodeSetupTool::makeGenkey()
@@ -158,94 +133,61 @@ std::string MasternodeSetupTool::makeGenkey()
 
 }
 
-void MasternodeSetupTool::checkMasternodePrivKey()
+std::vector<std::pair<string,string>> MasternodeSetupTool::checkMasternodeOutputs()
 {
+    std::vector<std::pair<string,string>> result;
 
-
-}
-
-
-void MasternodeSetupTool::checkIsMasternode()
-{
-
-
-}
-void MasternodeSetupTool::checkMasternodeAddr()
-{
-
-}
-void MasternodeSetupTool::checkMasternodeOutputs()
-{
     std::vector<COutput> vPossibleCoins;
     pwalletMain->AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_1000);
 
     UniValue obj(UniValue::VOBJ);
     BOOST_FOREACH(COutput& out, vPossibleCoins) 
     {
-
-       // QString gggoom = QString::fromStdString();
-     //   QString gggoom2 = QString::fromStdString();
-
-            m_qobj->showMessageTwoArgs("outputs : %1 = %2",out.tx->GetHash().ToString(),strprintf("%d", out.i));
-
-       /* QString textpkkm = QString("outputs : %1, %2").arg(gggoom).arg(gggoom2);
-        QMessageBox::information(this, QString::fromStdString("paid!"),textpkkm,QMessageBox::Ok);
-
-        obj.push_back(Pair(out.tx->GetHash().ToString(), strprintf("%d", out.i)));*/
+        //m_qobj->showMessageTwoArgs("outputs : %1 = %2",out.tx->GetHash().ToString(),strprintf("%d", out.i));        
+        result.push_back(std::pair<string,string>{out.tx->GetHash().ToString(),std::to_string(out.i)});
     }
 
-
+    return result;
 }
 
 
-void MasternodeSetupTool::writeConfFiles()
+void MasternodeSetupTool::writeDigitalcoinConfFile(string _line)
 {
-    //Arg
-    UniValue addressInfo(UniValue::VARR);
-
-
     //
     //  add a line to a file
     //
     // reopen the log file, if requested
     
     FILE *  fileout=NULL;
-    int ret;
-    string strTimestamped=string("ploup=1");
+    
+    //string strTimestamped=string("ploup=1");
 
-    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin2.conf";
+    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin.conf";
 
     fileout = fopen (pathDebug.string().c_str(),"aw");// use "a" for append, "w" to overwrite, previous content will be deleted
+    string s =string("\n")+_line;
 
-    fprintf(fileout,"\nmasternode=1");
-    fprintf(fileout,"\nmasternodeprivkey=");
-    fprintf(fileout,"\nmasternodeaddr=90.113.132.14:7999");
-    fprintf(fileout,"\nexternalip=90.113.132.14:7999");
+    fprintf(fileout,s.c_str());
 
     fclose (fileout); // must close after opening
+}
 
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode2.conf";
+void MasternodeSetupTool::writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index)
+{
+    FILE *  fileout=NULL;
 
-    fileout = fopen (pathDebug2.string().c_str(),"aw");// use "a" for append, "w" to overwrite, previous content will be deleted
+    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
+
+    fileout = fopen (pathDebug2.string().c_str(),"w");// use "a" for append, "w" to overwrite, previous content will be deleted
 
     // # Format: alias IP:port masternodeprivkey collateral_output_txid collateral_output_index
 
-    /* QString gggf3 = QString::fromStdString(addressInfo[1].get_str());
-
-    QString textpk6 = QString("\nmasternodeprivkey=%1").arg(gggf3);
-    QString textpk6 = QString("\nmasternodeaddr=%1").arg(info);
-    QString textpk6 = QString("\nexternalip=%1").arg(info);
-    QString textpk6 = QString("\nmasternode=1");
-
-    QString textpk6 = QString("\nmyMasternode %1:%2 %3 %4").arg(info).arg(info).arg(gggf3).arg(obj[0].first).arg(obj[1].second);
-    */
-
-    fprintf(fileout,"\nmasternode=1");
+    string s =string("\n")+_alias+string(" ")+_ipport+string(" ")+mnprivkey+string(" ")+_output+string(" ")+_index;
+    fprintf(fileout,s.c_str());
 
     fclose (fileout); // must close after opening
 
 }
-
 std::string MasternodeSetupTool::getConfParam(std::string _arg)
 {
     BOOST_FOREACH(auto ar, mapArgs) 
@@ -253,9 +195,10 @@ std::string MasternodeSetupTool::getConfParam(std::string _arg)
     
         if(ar.first==_arg)
         {
-            m_qobj->showMessageTwoArgs("arg : %1 = %2",ar.first,ar.second);
+            //m_qobj->showMessageTwoArgs("arg : %1 = %2",ar.first,ar.second);
             return ar.second;    
         }
 
     }
+    return string("");
 }

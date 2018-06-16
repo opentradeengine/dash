@@ -33,6 +33,7 @@
 #include <QHostInfo>
 #include <QtNetwork>
 #include "masternodeSetupTool.h"
+#include <QString>
 
 #define MY_MASTERNODELIST_UPDATE_SECONDS                 60
 #define MASTERNODELIST_UPDATE_SECONDS                    15

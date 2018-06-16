@@ -19,8 +19,10 @@
 #include <QHostAddress> 
 #include <QHostInfo>
 #include <QtNetwork>
-
+#include <QFileInfo>
 #include "masternodeSetupTool.h"
+
+#include <QString>
 
 int GetOffsetFromUtc()
 {
@@ -456,10 +458,11 @@ void MasternodeList::showMessageTwoArgs(std::string _message, std::string _param
 void MasternodeList::on_setupMasternodeButton_clicked()
 {
 
-m_MN.m_qobj=this;
+    m_MN.m_qobj=this;
+
     // Display message box
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm masternode start"),
-    tr("Do you really want to setup your Masternode ?"),
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
+    tr("Do you really want to setup a Digitalcoin Masternode ?\n\nMasternodes are required to have 10000 DGC collateral.\nYou must also have a dedicated IP."),
     QMessageBox::Yes | QMessageBox::Cancel,
     QMessageBox::Cancel);
 
@@ -471,25 +474,118 @@ m_MN.m_qobj=this;
     std::string strExternalIp = m_MN.getConfParam("-externalip");
     std::string strMasternodeAddr = m_MN.getConfParam("-masternodeaddr");
     std::string strMasternodePrivKey = m_MN.getConfParam("-masternodeprivkey");
-
+    std::string strPort = m_MN.getConfParam("-port");
     std::string mnGenkey = m_MN.makeGenkey();
 
-    auto info = m_MN.checkExternalIp();
+    auto ipaddr = m_MN.checkExternalIp();
 
-    //makeTransaction();
-  
-    m_MN.checkMasternodeOutputs();
-
-    //writeConfFile();
+    std::string strIpPort= ipaddr+":"+strPort;
 
 
+    bool masternodeFileExist=false;
+    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode2.conf";
+ 
+    QFileInfo check_file(pathDebug2.string().c_str());
     
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (check_file.exists())
+        masternodeFileExist=true;
+
+    if((strMasternode!="")
+        &&(strExternalIp!="")
+        &&(strMasternodeAddr!="")
+        &&(strMasternodePrivKey!="")
+        &&(masternodeFileExist==true))
+    {
+            string st = "Error : Looks like you aldready have a masternode.conf file\nand digitalcoin.conf params are aldready configured.\n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease remove all of this if you want to use the Masternode setup tool.";
+            //Something went wrong
+            QString qs = QString::fromStdString(st).arg(QString::fromStdString(strMasternode)).arg(QString::fromStdString(strExternalIp)).arg(QString::fromStdString(strMasternodeAddr)).arg(QString::fromStdString(strMasternodePrivKey));
+            
+            QMessageBox::information(this, tr("Digitalcoin masternode setup."),
+            qs,
+            QMessageBox::Ok);
+            
+            return;
+    }
+
+
+    if(strMasternode=="")
+    {
+        m_MN.writeDigitalcoinConfFile("masternode=1");
+    }
+
+    if(strExternalIp=="")
+    {
+        std::string tmp= "externalip="+strIpPort;
+        m_MN.writeDigitalcoinConfFile(tmp);
+    }
+
+    if(strMasternodeAddr=="")
+    {
+        std::string tmp= ("masternodeaddr="+strIpPort);
+        m_MN.writeDigitalcoinConfFile(tmp);
+    }
+
+    if(strMasternodePrivKey=="")
+    {
+        std::string tmp= ("masternodeprivkey="+mnGenkey);
+        m_MN.writeDigitalcoinConfFile(tmp);
+    }
+
+    auto listOutputs = m_MN.checkMasternodeOutputs();
+    
+    //Check if there is masternode output
+    if(listOutputs.size()==0)
+    {
+        //Try to make a collateral trasaction
+        m_MN.makeTransaction(walletModel);
+  
+        auto listOutputs2 = m_MN.checkMasternodeOutputs();  
+        if(listOutputs2.size()==0)
+        {
+            //Something went wrong
+            QMessageBox::information(this, tr("Digitalcoin masternode setup."),
+            tr("Error : Something went wrong with your collateral transaction.\nMaybe you don't aldready have your 10000 DGC required to setup a Masternode..."),
+            QMessageBox::Ok);
+            
+            return;
+        }
+    }
+
+
+    if(masternodeFileExist==true)
+    {
+        // Display message box
+        QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
+        tr("Do you want to override your existing masternode.conf file ?"),
+        QMessageBox::Yes | QMessageBox::Cancel,
+        QMessageBox::Cancel);
+
+        if(retval != QMessageBox::Yes) 
+        {
+            // Display message box
+            QMessageBox::information(this, tr("Digitalcoin masternode setup."),
+            tr("Error : Your masternode.conf file was not setup correctly. Please override your existing file."),
+            QMessageBox::Ok);
+            return;
+        }
+    }
+
+    //Override masternode.conf file
+    m_MN.writeMasternodeConfFile("Masternode",strIpPort,mnGenkey,listOutputs[0].first,listOutputs[0].second);
+
+    // Display message box
+    QMessageBox::information(this, tr("Digitalcoin masternode setup."),
+    tr("Your Digitalcoin Masternode was successfully created !\n\nYour wallet will be turned off, PLEASE RESTART YOUR WALLET to see your running Masternode under \"My masternodes\" tab."),
+    QMessageBox::Ok);
+    
+    // Shutdown
+    StartShutdown();
+
     //
     //  others usefull methodes :
     //
     //updateMyNodeList(true);   
     //auto info = QHostInfo::localHostName();
-    
-
 
 }
