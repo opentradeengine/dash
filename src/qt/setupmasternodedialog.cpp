@@ -257,8 +257,7 @@ void SetupMasternodeDialog::on_sendButton_clicked()
     QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
     QString strFee = "";
 
-    SendCoinsRecipient recipient(addr, label, 12, msg);
-    recipient.inputType = ONLY_DENOMINATED;
+    SendCoinsRecipient recipient(addr, label, 12000000, msg);
     recipient.inputType = ALL_COINS;
     recipient.fUseInstantSend = false;
 
