@@ -257,13 +257,18 @@ void SetupMasternodeDialog::on_sendButton_clicked()
     QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
     QString strFee = "";
 
-    SendCoinsRecipient recipient(addr, label, 12000000, msg);
+    SendCoinsRecipient recipient(addr, label, 1200000000, msg);
     recipient.inputType = ALL_COINS;
     recipient.fUseInstantSend = false;
 
     QList<SendCoinsRecipient> recipients;
     recipients.append(recipient);
-    send(recipients, strFee, strFunds);
+
+    WalletModelTransaction currentTransaction(recipients);
+    
+    model->sendCoins(currentTransaction);
+    
+    //send(recipients, strFee, strFunds);
 
     /*
         LOCK2(cs_main, wallet->cs_wallet);
