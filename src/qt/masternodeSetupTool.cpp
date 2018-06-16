@@ -101,7 +101,7 @@ void MasternodeSetupTool::makeTransaction(WalletModel * walletModel)
     QString label = "Masternode Collateral Transaction";
     QString msg = "Masternode collateral transaction.";
     
-    SendCoinsRecipient recipient(addr, label, 10*100000000, msg);
+    SendCoinsRecipient recipient(addr, label, 5*100000000, msg);
     recipient.inputType = ALL_COINS;
     recipient.fUseInstantSend = false;
 
