@@ -94,6 +94,8 @@ BitcoinGUI::BitcoinGUI(const PlatformStyle *platformStyle, const NetworkStyle *n
     quitAction(0),
     sendCoinsAction(0),
     sendCoinsMenuAction(0),
+    setupMasternodeAction(0),
+    setupMasternodeMenuAction(0),
     usedSendingAddressesAction(0),
     usedReceivingAddressesAction(0),
     signMessageAction(0),
@@ -311,6 +313,21 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setStatusTip(sendCoinsAction->statusTip());
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
+    setupMasternodeAction = new QAction(QIcon(":/icons/" + theme + "/setupmn"), tr("&SetupMasternode"), this);
+    setupMasternodeAction->setStatusTip(tr("Setup Masternode to a Digitalcoin address"));
+    setupMasternodeAction->setToolTip(setupMasternodeAction->statusTip());
+    setupMasternodeAction->setCheckable(true);
+#ifdef Q_OS_MAC
+    setupMasternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+#else
+    setupMasternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+#endif
+    tabGroup->addAction(setupMasternodeAction);
+
+    setupMasternodeMenuAction = new QAction(QIcon(":/icons/" + theme + "/send"), setupMasternodeAction->text(), this);
+    setupMasternodeMenuAction->setStatusTip(setupMasternodeAction->statusTip());
+    setupMasternodeMenuAction->setToolTip(setupMasternodeMenuAction->statusTip());
+
     receiveCoinsAction = new QAction(QIcon(":/icons/" + theme + "/receiving_addresses"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and digitalcoin: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
@@ -345,9 +362,9 @@ void BitcoinGUI::createActions()
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
 #ifdef Q_OS_MAC
-        masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
+        masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
-        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
+        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
 #endif
         tabGroup->addAction(masternodeAction);
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -362,6 +379,10 @@ void BitcoinGUI::createActions()
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(sendCoinsMenuAction, SIGNAL(triggered()), this, SLOT(gotoSendCoinsPage()));
+    connect(setupMasternodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(setupMasternodeAction, SIGNAL(triggered()), this, SLOT(gotoSetupMasternodePage()));
+    connect(setupMasternodeMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(setupMasternodeMenuAction, SIGNAL(triggered()), this, SLOT(gotoSetupMasternodePage()));    
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(receiveCoinsAction, SIGNAL(triggered()), this, SLOT(gotoReceiveCoinsPage()));
     connect(receiveCoinsMenuAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -558,6 +579,7 @@ void BitcoinGUI::createToolBars()
         toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
+        toolbar->addAction(setupMasternodeAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
         QSettings settings;
@@ -702,6 +724,8 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     overviewAction->setEnabled(enabled);
     sendCoinsAction->setEnabled(enabled);
     sendCoinsMenuAction->setEnabled(enabled);
+    setupMasternodeAction->setEnabled(enabled);
+    setupMasternodeMenuAction->setEnabled(enabled);
     receiveCoinsAction->setEnabled(enabled);
     receiveCoinsMenuAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
@@ -894,6 +918,12 @@ void BitcoinGUI::gotoSendCoinsPage(QString addr)
 {
     sendCoinsAction->setChecked(true);
     if (walletFrame) walletFrame->gotoSendCoinsPage(addr);
+}
+
+void BitcoinGUI::gotoSetupMasternodePage(QString addr)
+{
+    setupMasternodeAction->setChecked(true);
+    if (walletFrame) walletFrame->gotoSetupMasternodePage(addr);
 }
 
 void BitcoinGUI::gotoSignMessageTab(QString addr)
