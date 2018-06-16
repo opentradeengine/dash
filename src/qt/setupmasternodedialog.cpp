@@ -264,7 +264,22 @@ void SetupMasternodeDialog::on_sendButton_clicked()
     QList<SendCoinsRecipient> recipients;
     recipients.append(recipient);
     
-    send(recipients, strFee, strFunds);
+ //   send(recipients, strFee, strFunds);
+    WalletModelTransaction currentTransaction(recipients);
+    WalletModel::SendCoinsReturn prepareStatus;
+    if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
+        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+    else
+        prepareStatus = model->prepareTransaction(currentTransaction);
+
+    // process prepareStatus and on error generate message shown to user
+    processSendCoinsReturn(prepareStatus,
+        BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()));
+
+    // now send the prepared transaction
+    WalletModel::SendCoinsReturn sendStatus = model->sendCoins(currentTransaction);
+    // process sendStatus and on error generate message shown to user
+    processSendCoinsReturn(sendStatus);
 }
 
 void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds)
@@ -280,46 +295,6 @@ void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString s
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,
         BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()));
-
-    CAmount txFee = currentTransaction.getTransactionFee();
-
-    // Format confirmation message
-  /*  QStringList formatted;
-    Q_FOREACH(const SendCoinsRecipient &rcp, currentTransaction.getRecipients())
-    {
-        // generate bold amount string
-        QString amount = "<b>" + BitcoinUnits::formatHtmlWithUnit(model->getOptionsModel()->getDisplayUnit(), rcp.amount);
-        amount.append("</b> ").append(strFunds);
-
-        // generate monospace address string
-        QString address = "<span style='font-family: monospace;'>" + rcp.address;
-        address.append("</span>");
-
-        QString recipientElement;
-
-        if (!rcp.paymentRequest.IsInitialized()) // normal payment
-        {
-            if(rcp.label.length() > 0) // label with address
-            {
-                recipientElement = tr("%1 to %2").arg(amount, GUIUtil::HtmlEscape(rcp.label));
-                recipientElement.append(QString(" (%1)").arg(address));
-            }
-            else // just address
-            {
-                recipientElement = tr("%1 to %2").arg(amount, address);
-            }
-        }
-        else if(!rcp.authenticatedMerchant.isEmpty()) // authenticated payment request
-        {
-            recipientElement = tr("%1 to %2").arg(amount, GUIUtil::HtmlEscape(rcp.authenticatedMerchant));
-        }
-        else // unauthenticated payment request
-        {
-            recipientElement = tr("%1 to %2").arg(amount, address);
-        }
-
-        formatted.append(recipientElement);
-    }*/
 
     // now send the prepared transaction
     WalletModel::SendCoinsReturn sendStatus = model->sendCoins(currentTransaction);
