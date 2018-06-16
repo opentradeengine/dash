@@ -477,13 +477,9 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     std::string strPort = m_MN.getConfParam("-port");
     std::string mnGenkey = m_MN.makeGenkey();
 
-    auto ipaddr = m_MN.checkExternalIp();
-
-    std::string strIpPort= ipaddr+":"+strPort;
-
 
     bool masternodeFileExist=false;
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode2.conf";
+    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
  
     QFileInfo check_file(pathDebug2.string().c_str());
     
@@ -509,10 +505,25 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     }
 
 
+    if(strPort=="")
+    {
+        m_MN.writeDigitalcoinConfFile("port=7999");
+        strPort="7999";
+    }
+
     if(strMasternode=="")
     {
         m_MN.writeDigitalcoinConfFile("masternode=1");
     }
+
+    if(strMasternodePrivKey=="")
+    {
+        std::string tmp= ("masternodeprivkey="+mnGenkey);
+        m_MN.writeDigitalcoinConfFile(tmp);
+    }
+
+    auto ipaddr = m_MN.checkExternalIp();
+    std::string strIpPort= ipaddr+":"+strPort;
 
     if(strExternalIp=="")
     {
@@ -523,12 +534,6 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     if(strMasternodeAddr=="")
     {
         std::string tmp= ("masternodeaddr="+strIpPort);
-        m_MN.writeDigitalcoinConfFile(tmp);
-    }
-
-    if(strMasternodePrivKey=="")
-    {
-        std::string tmp= ("masternodeprivkey="+mnGenkey);
         m_MN.writeDigitalcoinConfFile(tmp);
     }
 
