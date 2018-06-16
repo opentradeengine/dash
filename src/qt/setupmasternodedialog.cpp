@@ -257,14 +257,13 @@ void SetupMasternodeDialog::on_sendButton_clicked()
     QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
     QString strFee = "";
 
-    SendCoinsRecipient recipient(addr, label, 1200000000, msg);
+    SendCoinsRecipient recipient(addr, label, 600000000, msg);
     recipient.inputType = ALL_COINS;
     recipient.fUseInstantSend = false;
 
     QList<SendCoinsRecipient> recipients;
     recipients.append(recipient);
     
- //   send(recipients, strFee, strFunds);
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
@@ -272,14 +271,7 @@ void SetupMasternodeDialog::on_sendButton_clicked()
     else
         prepareStatus = model->prepareTransaction(currentTransaction);
 
-    // process prepareStatus and on error generate message shown to user
-    processSendCoinsReturn(prepareStatus,
-        BitcoinUnits::formatWithUnit(model->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()));
-
-    // now send the prepared transaction
     WalletModel::SendCoinsReturn sendStatus = model->sendCoins(currentTransaction);
-    // process sendStatus and on error generate message shown to user
-    processSendCoinsReturn(sendStatus);
 }
 
 void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds)

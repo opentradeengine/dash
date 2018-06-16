@@ -11,6 +11,8 @@
 #include "sync.h"
 #include "wallet/wallet.h"
 #include "walletmodel.h"
+#include "optionsmodel.h"
+#include "coincontroldialog.h"
 
 #include <QTimer>
 #include <QMessageBox>
@@ -456,40 +458,26 @@ void MasternodeList::showMessageTwoArgs(std::string _message, std::string _param
 void MasternodeList::on_setupMasternodeButton_clicked()
 {
 
-m_MN.m_qobj=this;
-    // Display message box
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm masternode start"),
-    tr("Do you really want to setup your Masternode ?"),
-    QMessageBox::Yes | QMessageBox::Cancel,
-    QMessageBox::Cancel);
+    QString addr = "DB1LMwYsSkgAhAynePoDp3UedgjzWJ1aV4";
+    QString label = "testLabel";
+    QString msg = "testMessage";
+    QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
+    QString strFee = "";
 
-    if(retval != QMessageBox::Yes) 
-        return;
+    SendCoinsRecipient recipient(addr, label, 600000000, msg);
+    recipient.inputType = ALL_COINS;
+    recipient.fUseInstantSend = false;
 
-    ReadConfigFile(mapArgs,mapMultiArgs);
-    std::string strMasternode = m_MN.getConfParam("-masternode");
-    std::string strExternalIp = m_MN.getConfParam("-externalip");
-    std::string strMasternodeAddr = m_MN.getConfParam("-masternodeaddr");
-    std::string strMasternodePrivKey = m_MN.getConfParam("-masternodeprivkey");
-
-    std::string mnGenkey = m_MN.makeGenkey();
-
-    auto info = m_MN.checkExternalIp();
-
-    //makeTransaction();
-  
-    m_MN.checkMasternodeOutputs();
-
-    //writeConfFile();
-
-
+    QList<SendCoinsRecipient> recipients;
+    recipients.append(recipient);
     
-    //
-    //  others usefull methodes :
-    //
-    //updateMyNodeList(true);   
-    //auto info = QHostInfo::localHostName();
-    
+    WalletModelTransaction currentTransaction(recipients);
+    WalletModel::SendCoinsReturn prepareStatus;
+    if (walletModel->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
+        prepareStatus = walletModel->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+    else
+        prepareStatus = walletModel->prepareTransaction(currentTransaction);
 
+    WalletModel::SendCoinsReturn sendStatus = walletModel->sendCoins(currentTransaction);
 
 }
