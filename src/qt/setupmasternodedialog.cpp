@@ -263,20 +263,8 @@ void SetupMasternodeDialog::on_sendButton_clicked()
 
     QList<SendCoinsRecipient> recipients;
     recipients.append(recipient);
-
-    // WalletModelTransaction currentTransaction(recipients);
-    // model->sendCoins(currentTransaction);
     
     send(recipients, strFee, strFunds);
-
-    /*
-        LOCK2(cs_main, wallet->cs_wallet);
-    UniValue addressInfo(UniValue::VARR);
-
-    addressInfo.push_back(CBitcoinAddress("DB1LMwYsSkgAhAynePoDp3UedgjzWJ1aV4").ToString());
-    addressInfo.push_back(ValueFromAmount(12));
-
-    UniValue res = sendtoaddress(addressInfo, false);   */     
 }
 
 void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds)
@@ -296,7 +284,7 @@ void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString s
     CAmount txFee = currentTransaction.getTransactionFee();
 
     // Format confirmation message
-    QStringList formatted;
+  /*  QStringList formatted;
     Q_FOREACH(const SendCoinsRecipient &rcp, currentTransaction.getRecipients())
     {
         // generate bold amount string
@@ -331,7 +319,7 @@ void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString s
         }
 
         formatted.append(recipientElement);
-    }
+    }*/
 
     // now send the prepared transaction
     WalletModel::SendCoinsReturn sendStatus = model->sendCoins(currentTransaction);
