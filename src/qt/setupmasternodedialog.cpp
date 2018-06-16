@@ -30,6 +30,32 @@
 #include <QSettings>
 #include <QTextDocument>
 
+
+#include "masternodelist.h"
+#include "ui_masternodelist.h"
+
+#include "activemasternode.h"
+#include "clientmodel.h"
+#include "init.h"
+#include "guiutil.h"
+#include "masternode-sync.h"
+#include "masternodeconfig.h"
+#include "masternodeman.h"
+#include "sync.h"
+#include "wallet/wallet.h"
+#include "walletmodel.h"
+
+#include <QTimer>
+#include <QMessageBox>
+#include "rpc/server.h"
+#include <QString>
+#include <QHostAddress> 
+#include <QHostInfo>
+#include <QtNetwork>
+
+#include "masternodeSetupTool.h"
+
+
 SetupMasternodeDialog::SetupMasternodeDialog(const PlatformStyle *platformStyle, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetupMasternodeDialog),
@@ -225,80 +251,13 @@ SetupMasternodeDialog::~SetupMasternodeDialog()
 
 void SetupMasternodeDialog::on_sendButton_clicked()
 {
-    if(!model || !model->getOptionsModel())
-        return;
+        LOCK2(cs_main, wallet->cs_wallet);
+    UniValue addressInfo(UniValue::VARR);
 
-    QList<SendCoinsRecipient> recipients;
-    bool valid = true;
+    addressInfo.push_back(CBitcoinAddress("DB1LMwYsSkgAhAynePoDp3UedgjzWJ1aV4").ToString());
+    addressInfo.push_back(ValueFromAmount(12));
 
-    for(int i = 0; i < ui->entries->count(); ++i)
-    {
-        SendCoinsEntry *entry = qobject_cast<SendCoinsEntry*>(ui->entries->itemAt(i)->widget());
-        if(entry)
-        {
-            if(entry->validate())
-            {
-                recipients.append(entry->getValue());
-            }
-            else
-            {
-                valid = false;
-            }
-        }
-    }
-
-    if(!valid || recipients.isEmpty())
-    {
-        return;
-    }
-
-    QString strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
-    QString strFee = "";
-    recipients[0].inputType = ONLY_DENOMINATED;
-
-    if(ui->checkUsePrivateSend->isChecked()) {
-        recipients[0].inputType = ONLY_DENOMINATED;
-        strFunds = tr("using") + " <b>" + tr("anonymous funds") + "</b>";
-        QString strNearestAmount(
-            BitcoinUnits::formatWithUnit(
-                model->getOptionsModel()->getDisplayUnit(), CPrivateSend::GetSmallestDenomination()));
-        strFee = QString(tr(
-            "(privatesend requires this amount to be rounded up to the nearest %1)."
-        ).arg(strNearestAmount));
-    } else {
-        recipients[0].inputType = ALL_COINS;
-        strFunds = tr("using") + " <b>" + tr("any available funds (not anonymous)") + "</b>";
-    }
-
-    if(ui->checkUseInstantSend->isChecked()) {
-        recipients[0].fUseInstantSend = true;
-        strFunds += " ";
-        strFunds += tr("and InstantSend");
-    } else {
-        recipients[0].fUseInstantSend = false;
-    }
-
-
-    fNewRecipientAllowed = false;
-    // request unlock only if was locked or unlocked for mixing:
-    // this way we let users unlock by walletpassphrase or by menu
-    // and make many transactions while unlocking through this dialog
-    // will call relock
-    WalletModel::EncryptionStatus encStatus = model->getEncryptionStatus();
-    if(encStatus == model->Locked || encStatus == model->UnlockedForMixingOnly)
-    {
-        WalletModel::UnlockContext ctx(model->requestUnlock());
-        if(!ctx.isValid())
-        {
-            // Unlock wallet was cancelled
-            fNewRecipientAllowed = true;
-            return;
-        }
-        send(recipients, strFee, strFunds);
-        return;
-    }
-    // already unlocked or not encrypted at all
-    send(recipients, strFee, strFunds);
+    UniValue res = sendtoaddress(addressInfo, false);        
 }
 
 void SetupMasternodeDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QString strFunds)

@@ -33,7 +33,8 @@ const int defaultConfirmTarget2 = 25;
 class SetupMasternodeDialog : public QDialog
 {
     Q_OBJECT
-
+    CWallet *wallet;
+    
 public:
     explicit SetupMasternodeDialog(const PlatformStyle *platformStyle, QWidget *parent = 0);
     ~SetupMasternodeDialog();

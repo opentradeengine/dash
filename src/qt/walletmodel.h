@@ -110,7 +110,7 @@ class WalletModel : public QObject
 public:
     explicit WalletModel(const PlatformStyle *platformStyle, CWallet *wallet, OptionsModel *optionsModel, QObject *parent = 0);
     ~WalletModel();
-
+    CWallet *wallet;
     enum StatusCode // Returned by sendCoins
     {
         OK,
@@ -217,7 +217,7 @@ public:
     bool hdEnabled() const;
 
 private:
-    CWallet *wallet;
+
     bool fHaveWatchOnly;
     bool fForceCheckBalanceChanged;
 
