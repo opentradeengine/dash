@@ -14,6 +14,7 @@
 
 #include <QTimer>
 #include <QMessageBox>
+#include <QInputDialog>
 #include "rpc/server.h"
 #include <QString>
 #include <QHostAddress> 
@@ -89,6 +90,17 @@ std::string MasternodeSetupTool::checkExternalIp()
 
     // m_qobj->showMessage(std::string("So you want to setup your masternode on this IP : %1?"),info.toStdString());
 
+if(info=="")
+{
+    bool ok;
+    QString text = QInputDialog::getText(m_qobj, tr("What is your public IP address?"),
+                                         tr("We need your external IP address (format : xxx.xxx.xxx.xxx),\nYou can go on showip.net to get it ;)"), QLineEdit::Normal,
+                                         QDir::home().dirName(), &ok);
+    /*if (ok && !text.isEmpty())
+        textLabel->setText(text);*/
+        info = text;
+ 
+}
     return info.toStdString();
 
 }

@@ -493,7 +493,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
         &&(strMasternodePrivKey!="")
         &&(masternodeFileExist==true))
     {
-            string st = "Error : Looks like you aldready have a masternode.conf file\nand digitalcoin.conf params are aldready configured.\n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease remove all of this if you want to use the Masternode setup tool.";
+            string st = "Error : Looks like you already have a masternode.conf file\nand digitalcoin.conf params are aldready configured.\n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease remove all of this if you want to use the Masternode setup tool.";
             //Something went wrong
             QString qs = QString::fromStdString(st).arg(QString::fromStdString(strMasternode)).arg(QString::fromStdString(strExternalIp)).arg(QString::fromStdString(strMasternodeAddr)).arg(QString::fromStdString(strMasternodePrivKey));
             
@@ -503,6 +503,11 @@ void MasternodeList::on_setupMasternodeButton_clicked()
             
             return;
     }
+
+    auto ipaddr = m_MN.checkExternalIp();
+    
+    if(ipaddr=="")
+       return;
 
 
     if(strPort=="")
@@ -514,31 +519,30 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     if(strMasternode=="")
     {
         m_MN.writeDigitalcoinConfFile("masternode=1");
+        strMasternode="1";
     }
 
     if(strMasternodePrivKey=="")
     {
         std::string tmp= ("masternodeprivkey="+mnGenkey);
         m_MN.writeDigitalcoinConfFile(tmp);
+        strMasternodePrivKey=mnGenkey;
     }
-
-    auto ipaddr = m_MN.checkExternalIp();
-    
-    if(ipaddr=="")
-       return;
-    
+   
     std::string strIpPort= ipaddr+":"+strPort;
 
     if(strExternalIp=="")
     {
         std::string tmp= "externalip="+strIpPort;
         m_MN.writeDigitalcoinConfFile(tmp);
+        strExternalIp=strIpPort;
     }
 
     if(strMasternodeAddr=="")
     {
         std::string tmp= ("masternodeaddr="+strIpPort);
         m_MN.writeDigitalcoinConfFile(tmp);
+        strMasternodeAddr=strIpPort;
     }
 
     auto listOutputs = m_MN.checkMasternodeOutputs();
@@ -581,12 +585,12 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     }
 
     //Override masternode.conf file
-    m_MN.writeMasternodeConfFile("Masternode",strIpPort,mnGenkey,listOutputs[0].first,listOutputs[0].second);
+    m_MN.writeMasternodeConfFile("Masternode",strIpPort,strMasternodePrivKey,listOutputs[0].first,listOutputs[0].second);
 
     // Display message box
     QMessageBox::information(this, tr("Digitalcoin masternode setup."),
     tr("Your Digitalcoin Masternode was successfully created !\n\nYour wallet will be turned off, PLEASE RESTART YOUR WALLET to see your running Masternode under \"My masternodes\" tab."),
-    QMessageBox::Ok);
+    QString("Shutdown wallet to setup masternode."));
     
     // Shutdown
     StartShutdown();
