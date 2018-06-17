@@ -200,19 +200,16 @@ void MasternodeSetupTool::writeDigitalcoinConfFile(string _line)
 void MasternodeSetupTool::writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index)
 {
     FILE *  fileout=NULL;
-
     boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
 
     fileout = fopen (pathDebug2.string().c_str(),"w");// use "a" for append, "w" to overwrite, previous content will be deleted
 
-    // # Format: alias IP:port masternodeprivkey collateral_output_txid collateral_output_index
-
     string s =string("\n")+_alias+string(" ")+_ipport+string(" ")+mnprivkey+string(" ")+_output+string(" ")+_index;
+
     fprintf(fileout,s.c_str());
-
     fclose (fileout); // must close after opening
-
 }
+
 std::string MasternodeSetupTool::getConfParam(std::string _arg)
 {
     BOOST_FOREACH(auto ar, mapArgs) 

@@ -461,8 +461,6 @@ void MasternodeList::on_setupMasternodeButton_clicked()
 
     m_MN.m_qobj=this;
 
- 
-
     ReadConfigFile(mapArgs,mapMultiArgs);
     std::string strMasternode = m_MN.getConfParam("-masternode");
     std::string strExternalIp = m_MN.getConfParam("-externalip");
@@ -508,24 +506,10 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     if(retval != QMessageBox::Yes) 
         return;
 
-
-
-
-
-
     auto ipaddr = m_MN.checkExternalIp();
     
     if(ipaddr=="")
        return;
-
-
-    // if(strPort=="")
-    // {
-    //     m_MN.writeDigitalcoinConfFile("port=7999");
-    //     strPort="7999";
-    // }
-
-  //  strPort = to_string(chainParams.GetDefaultPort());
 
     if(strMasternode=="")
     {
@@ -563,9 +547,10 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     {
         //Try to make a collateral trasaction
         m_MN.makeTransaction(walletModel);
-  
-        auto listOutputs2 = m_MN.checkMasternodeOutputs();  
-        if(listOutputs2.size()==0)
+
+         listOutputs = m_MN.checkMasternodeOutputs();  
+
+        if(listOutputs.size()==0)
         {
             //Something went wrong
             QMessageBox::information(this, tr("Digitalcoin masternode setup."),
@@ -579,6 +564,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
 
     if(masternodeFileExist==true)
     {
+
         // Display message box
         QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
         tr("Do you want to override your existing masternode.conf file ?"),
@@ -594,9 +580,10 @@ void MasternodeList::on_setupMasternodeButton_clicked()
             return;
         }
     }
-
+            
     //Override masternode.conf file
     m_MN.writeMasternodeConfFile("Masternode",strIpPort,strMasternodePrivKey,listOutputs[0].first,listOutputs[0].second);
+   
 
     // Display message box
     QMessageBox::information(this, tr("Digitalcoin masternode setup."),
@@ -605,6 +592,10 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     
     // Shutdown
    // StartShutdown();
+    mapArgs.clear();
+    mapMultiArgs.clear();
+    ReadConfigFile(mapArgs,mapMultiArgs);
+
     masternodeConfig.clearEntries();
 
     std::string masternodeConfigErrors;
