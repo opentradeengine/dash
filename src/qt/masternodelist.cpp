@@ -604,8 +604,14 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     QString("Shutdown wallet to setup masternode."));
     
     // Shutdown
-    StartShutdown();
+   // StartShutdown();
+    masternodeConfig.clearEntries();
 
+    std::string masternodeConfigErrors;
+
+    masternodeConfig.read(masternodeConfigErrors);
+
+    updateMyNodeList(true);
     //
     //  others usefull methodes :
     //
