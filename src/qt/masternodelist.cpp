@@ -457,6 +457,7 @@ void MasternodeList::showMessageTwoArgs(std::string _message, std::string _param
 }
 void MasternodeList::on_setupMasternodeButton_clicked()
 {
+    const CChainParams& chainParams = Params();
 
     m_MN.m_qobj=this;
 
@@ -467,7 +468,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     std::string strExternalIp = m_MN.getConfParam("-externalip");
     std::string strMasternodeAddr = m_MN.getConfParam("-masternodeaddr");
     std::string strMasternodePrivKey = m_MN.getConfParam("-masternodeprivkey");
-    std::string strPort = m_MN.getConfParam("-port");
+//    std::string strPort = m_MN.getConfParam("-port");
     std::string mnGenkey = m_MN.makeGenkey();
 
 
@@ -518,11 +519,13 @@ void MasternodeList::on_setupMasternodeButton_clicked()
        return;
 
 
-    if(strPort=="")
-    {
-        m_MN.writeDigitalcoinConfFile("port=7999");
-        strPort="7999";
-    }
+    // if(strPort=="")
+    // {
+    //     m_MN.writeDigitalcoinConfFile("port=7999");
+    //     strPort="7999";
+    // }
+
+  //  strPort = to_string(chainParams.GetDefaultPort());
 
     if(strMasternode=="")
     {
@@ -537,7 +540,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
         strMasternodePrivKey=mnGenkey;
     }
    
-    std::string strIpPort= ipaddr+":"+strPort;
+    std::string strIpPort= ipaddr+":"+to_string(chainParams.GetDefaultPort());
 
     if(strExternalIp=="")
     {
@@ -614,7 +617,8 @@ void MasternodeList::on_setupMasternodeButton_clicked()
 
 void MasternodeList::on_removeMasternodeButton_clicked()
 {
-    // Display message box
+
+   // Display message box
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
     tr("You are about to delete your digitalcoin.conf and masternode.conf files."),
     QMessageBox::Yes | QMessageBox::Cancel,
@@ -623,10 +627,9 @@ void MasternodeList::on_removeMasternodeButton_clicked()
     if(retval != QMessageBox::Yes) 
         return;
 
-    boost::filesystem::path pathDebug1 = GetDataDir() / "digitalcoin.conf";
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
+    m_MN.cleanDigitalcoinConf();
 
-    remove( pathDebug1.string().c_str());
+    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
     remove( pathDebug2.string().c_str());
     
     // Shutdown

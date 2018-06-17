@@ -26,6 +26,9 @@
 #include "bitcoinunits.h"
 #include "qobject.h"
 
+#include <iostream>
+#include <fstream>
+
 CBitcoinAddress GetAccountAddress( string strAccount, bool bForceNew=false);
 
 std::string MasternodeSetupTool::checkExternalIp()
@@ -273,4 +276,33 @@ void MasternodeSetupTool::processSendCoinsReturn(WalletModel * walletModel, cons
     }
         m_qobj->showMessage("Error with transaction : %1" , msgParams.first.toStdString());   
 //    Q_EMIT message(tr("Send Coins"), msgParams.first, msgParams.second);
+}
+
+void MasternodeSetupTool::cleanDigitalcoinConf()
+{
+    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin.conf";
+
+    std::vector<std::string> lines;
+
+    std::string item_name;
+    std::ifstream nameFileout;
+
+    nameFileout.open(pathDebug.string().c_str());
+
+    while (nameFileout >> item_name)
+    {
+        if(item_name.find("masternode") == std::string::npos
+        && item_name.find("externalip") == std::string::npos)
+        {
+           lines.push_back(item_name);
+        }
+    }
+
+    nameFileout.close();
+    
+    remove(pathDebug.string().c_str());
+    
+    for(std::string& key : lines)
+        writeDigitalcoinConfFile(key);
+
 }

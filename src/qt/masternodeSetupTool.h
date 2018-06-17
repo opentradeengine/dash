@@ -61,6 +61,7 @@ public:
     std::vector<std::pair<string,string>> checkMasternodeOutputs();
     std::string makeGenkey();
     void makeTransaction(WalletModel * walletModel);
+    void cleanDigitalcoinConf();
     std::string checkExternalIp();
 
     MasternodeList *  m_qobj=nullptr;
