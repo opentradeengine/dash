@@ -57,6 +57,7 @@ public:
     std::string getConfParam(std::string _arg);    
     void writeDigitalcoinConfFile(string _line);
     void writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index);
+    void processSendCoinsReturn(WalletModel * walletModel, const WalletModel::SendCoinsReturn &sendCoinsReturn, const QString &msgArg = QString());
     std::vector<std::pair<string,string>> checkMasternodeOutputs();
     std::string makeGenkey();
     void makeTransaction(WalletModel * walletModel);
