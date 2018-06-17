@@ -460,14 +460,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
 
     m_MN.m_qobj=this;
 
-    // Display message box
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
-    tr("Do you really want to setup a Digitalcoin Masternode ?\n\nMasternodes are required to have 10000 DGC collateral.\nYou must also have a dedicated IP."),
-    QMessageBox::Yes | QMessageBox::Cancel,
-    QMessageBox::Cancel);
-
-    if(retval != QMessageBox::Yes) 
-        return;
+ 
 
     ReadConfigFile(mapArgs,mapMultiArgs);
     std::string strMasternode = m_MN.getConfParam("-masternode");
@@ -493,7 +486,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
         &&(strMasternodePrivKey!="")
         &&(masternodeFileExist==true))
     {
-            string st = "Error : Looks like you already have a masternode.conf file\nand digitalcoin.conf params are aldready configured.\n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease remove all of this if you want to use the Masternode setup tool.";
+            string st = "Looks like you already have a Masternode :) \n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease press \"Remove Masternode\" button first if you want to use the Masternode setup tool.";
             //Something went wrong
             QString qs = QString::fromStdString(st).arg(QString::fromStdString(strMasternode)).arg(QString::fromStdString(strExternalIp)).arg(QString::fromStdString(strMasternodeAddr)).arg(QString::fromStdString(strMasternodePrivKey));
             
@@ -503,6 +496,21 @@ void MasternodeList::on_setupMasternodeButton_clicked()
             
             return;
     }
+
+
+   // Display message box
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
+    tr("Do you really want to setup a Digitalcoin Masternode ?\n\nMasternodes are required to have 10000 DGC collateral.\nYou must also have a dedicated IP."),
+    QMessageBox::Yes | QMessageBox::Cancel,
+    QMessageBox::Cancel);
+
+    if(retval != QMessageBox::Yes) 
+        return;
+
+
+
+
+
 
     auto ipaddr = m_MN.checkExternalIp();
     
@@ -601,4 +609,26 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     //updateMyNodeList(true);   
     //auto info = QHostInfo::localHostName();
 
+}
+
+
+void MasternodeList::on_removeMasternodeButton_clicked()
+{
+    // Display message box
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
+    tr("You are about to delete your digitalcoin.conf and masternode.conf files."),
+    QMessageBox::Yes | QMessageBox::Cancel,
+    QMessageBox::Cancel);
+
+    if(retval != QMessageBox::Yes) 
+        return;
+
+    boost::filesystem::path pathDebug1 = GetDataDir() / "digitalcoin.conf";
+    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
+
+    remove( pathDebug1.string().c_str());
+    remove( pathDebug2.string().c_str());
+    
+    // Shutdown
+    StartShutdown();
 }

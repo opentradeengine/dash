@@ -103,5 +103,7 @@ private Q_SLOTS:
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
     void on_setupMasternodeButton_clicked();
+    void on_removeMasternodeButton_clicked();
+
 };
 #endif // MASTERNODELIST_H
