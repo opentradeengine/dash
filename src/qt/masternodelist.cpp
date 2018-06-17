@@ -523,6 +523,10 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     }
 
     auto ipaddr = m_MN.checkExternalIp();
+    
+    if(ipaddr=="")
+       return;
+    
     std::string strIpPort= ipaddr+":"+strPort;
 
     if(strExternalIp=="")
