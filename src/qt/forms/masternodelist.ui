@@ -191,16 +191,6 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="setupMasternodeButton">
-               <property name="text">
-                <string>Setup my masternode</string>
-               </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
               <spacer name="horizontalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -212,6 +202,23 @@
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="setupMasternodeButton">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>Setup Masternode</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="removeMasternodeButton">
+               <property name="text">
+                <string>Remove Masternode</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
