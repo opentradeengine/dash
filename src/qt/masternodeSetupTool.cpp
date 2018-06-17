@@ -51,6 +51,7 @@ std::string MasternodeSetupTool::checkExternalIp()
 
                 //Display message box
                 //QMessageBox::information(this, tr("ERROR"),QString("error ..."),QMessageBox::Ok);
+                m_qobj->showMessage(std::string("Error : can't get your external IP address.\nYou have to correct it manually in digitalcoin.conf and masternode.conf...%1"),info.toStdString());
 
                 qDebug() << "error: " << reply->error();
                 loop.quit();
