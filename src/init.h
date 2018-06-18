@@ -17,6 +17,7 @@ class thread_group;
 } // namespace boost
 
 extern CWallet* pwalletMain;
+bool fForceRestart = false;
 
 void StartShutdown();
 bool ShutdownRequested();
