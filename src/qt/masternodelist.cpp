@@ -591,26 +591,8 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     QString("Shutdown wallet to setup masternode."));
     
     // Shutdown
-   // StartShutdown();
-    mapArgs.clear();
-    mapMultiArgs.clear();
-    ReadConfigFile(mapArgs,mapMultiArgs);
-
-    masternodeConfig.clearEntries();
-
-    std::string masternodeConfigErrors;
-
-    masternodeConfig.read(masternodeConfigErrors);
-
-    updateMyNodeList(true);
-    //
-    //  others usefull methodes :
-    //
-    //updateMyNodeList(true);   
-    //auto info = QHostInfo::localHostName();
-
+   StartShutdown();
 }
-
 
 void MasternodeList::on_removeMasternodeButton_clicked()
 {
