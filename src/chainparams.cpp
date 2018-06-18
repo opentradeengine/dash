@@ -146,13 +146,8 @@ public:
         assert(consensus.hashGenesisBlock == uint256S("0x5e039e1ca1dbf128973bf6cff98169e40a1b194c3b91463ab74956f413b2f9c8"));
         assert(genesis.hashMerkleRoot == uint256S("0xecb2c595fff9f2364152c32027737007c5a4c60ec960cf93754b0211bc2a1501"));
 
-    /*    vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #1", "digitalcoin.co"));        
-        vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #2", "game.digitalcoin.co"));
-        vSeeds.push_back(CDNSSeedData("digitalcoin.co seed #3", "dev.digitalcoin.co"));
-        vSeeds.push_back(CDNSSeedData("ahmed seed #1", "178.62.28.81"));
         vSeeds.push_back(CDNSSeedData("bitnode baritus", "212.24.97.214")); 
-  */
-
+        vSeeds.push_back(CDNSSeedData("node V5", "82.165.30.169")); 
 
         // Digitalcoin addresses start with 'X'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,30);
