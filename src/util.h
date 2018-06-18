@@ -46,7 +46,6 @@
 extern bool fMasterNode;
 extern bool fLiteMode;
 extern int nWalletBackups;
-static bool fForceRestart = false;
 
 static const bool DEFAULT_LOGTIMEMICROS  = false;
 static const bool DEFAULT_LOGIPS         = false;

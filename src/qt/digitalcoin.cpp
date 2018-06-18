@@ -85,6 +85,8 @@ Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 Q_DECLARE_METATYPE(bool*)
 Q_DECLARE_METATYPE(CAmount)
 
+bool fForceRestart = false;
+
 static void InitMessage(const std::string &message)
 {
     LogPrintf("init message: %s\n", message);
