@@ -322,8 +322,6 @@ void BitcoinCore::shutdown()
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
         Q_EMIT shutdownResult(1);
-    if(fForceRestart)
-        QProcess::startDetached(qApp->arguments()[0], qApp->arguments());          
     } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
