@@ -355,6 +355,7 @@ static const CRPCCommand vRPCCommands[] =
     { "digitalcoin",               "spork",                  &spork,                  true  },
     { "digitalcoin",               "getpoolinfo",            &getpoolinfo,            true  },
     { "digitalcoin",               "sentinelping",           &sentinelping,           true  },
+    { "digitalcoin",               "setupmasternode",        &setupmasternode,        true  },
 #ifdef ENABLE_WALLET
     { "digitalcoin",               "privatesend",            &privatesend,            false },
 
