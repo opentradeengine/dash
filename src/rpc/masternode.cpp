@@ -977,7 +977,7 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
         CAmount amount = MASTERNODE_PRICE * COIN;        
 
         transactionInfo.push_back(addr);
-        transactionInfo.push_back(amount);
+        transactionInfo.push_back(string("10000000"));
 
         sendtoaddress(transactionInfo, false);
         listOutputs = checkMasternodeOutputs();  
