@@ -944,15 +944,12 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
 
     bool masternodeFileExist = false;
     boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
- 
-    // QFileInfo check_file(pathDebug2.string().c_str());
-    
-    // // check if file exists and if yes: Is it really a file and no directory?
-    // if (check_file.exists())
-    //     masternodeFileExist=true;
+
+    if (boost::filesystem::exists(pathDebug2.string().c_str()))
+            masternodeFileExist = true;
 
     if(masternodeFileExist==true)
-        return false;
+        return "Error Masternode already exist";
 
     if((strMasternode!="")
         &&(strExternalIp!="")
@@ -960,8 +957,7 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
         &&(strMasternodePrivKey!="")
         &&(masternodeFileExist==true))
     {
-            string st = "Looks like you already have a Masternode :) \n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease press \"Remove Masternode\" button first if you want to use the Masternode setup tool.";
-            return false;
+        return "Error : Looks like you already have a Masternode :) \n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease press delete it (deletemasternode) first if you want to use the Masternode setup tool.";
     }
 
     auto listOutputs = checkMasternodeOutputs();
@@ -971,19 +967,18 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
     {
         //Try to make a collateral trasaction
         //makeTransaction(walletModel);
-        UniValue transactionInfo;
+        UniValue transactionInfo(UniValue::VARR);
         CBitcoinAddress mnAddress = GetAccountAddress("Masternode",false);
         std::string addr = mnAddress.ToString();
-        CAmount amount = MASTERNODE_PRICE * COIN;        
 
         transactionInfo.push_back(addr);
-        transactionInfo.push_back(string("10000000"));
+        transactionInfo.push_back(string(string(MASTERNODE_PRICE)));
 
         sendtoaddress(transactionInfo, false);
         listOutputs = checkMasternodeOutputs();  
 
         if(listOutputs.size()==0)
-            return false;
+         return "Error : Outputs not found";
     }
 
     if(strMasternode=="")
@@ -1017,6 +1012,6 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
    
    StartShutdown();
     
-    return true;
+    return "Setup complet, please restart your wallet.";
 }
 
