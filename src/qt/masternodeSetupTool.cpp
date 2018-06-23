@@ -26,10 +26,10 @@
 #include "bitcoinunits.h"
 #include "qobject.h"
 
+#include "masternodeutil.h"
 #include <iostream>
 #include <fstream>
 
-CBitcoinAddress GetAccountAddress( string strAccount, bool bForceNew=false);
 
 std::string MasternodeSetupTool::checkExternalIp()
 {
@@ -110,7 +110,6 @@ std::string MasternodeSetupTool::checkExternalIp()
 
 void MasternodeSetupTool::makeTransaction(WalletModel * walletModel)
 {
-
     CBitcoinAddress mnAddress = GetAccountAddress("Masternode",false);
 
     QString addr = QString::fromStdString(mnAddress.ToString());
@@ -135,94 +134,9 @@ void MasternodeSetupTool::makeTransaction(WalletModel * walletModel)
         BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), currentTransaction.getTransactionFee()));
 
     if(prepareStatus.status != WalletModel::OK)
-    {
-  
         return;
-    }
 
-    /*WalletModel::SendCoinsReturn sendStatus = */walletModel->sendCoins(currentTransaction);
- 
-    //m_qobj->showMessage("5dgc paid at : %1",rpc_result.write());
-}
-
-std::string MasternodeSetupTool::makeGenkey()
-{
-
-    //genkey
-    CKey secret;
-    secret.MakeNewKey(false);
-
-    auto mnGenkey = CBitcoinSecret(secret).ToString();
-
-    return mnGenkey;
-
-}
-
-std::vector<std::pair<string,string>> MasternodeSetupTool::checkMasternodeOutputs()
-{
-    std::vector<std::pair<string,string>> result;
-
-    std::vector<COutput> vPossibleCoins;
-    pwalletMain->AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_1000);
-
-    UniValue obj(UniValue::VOBJ);
-    BOOST_FOREACH(COutput& out, vPossibleCoins) 
-    {
-        //m_qobj->showMessageTwoArgs("outputs : %1 = %2",out.tx->GetHash().ToString(),strprintf("%d", out.i));        
-        result.push_back(std::pair<string,string>{out.tx->GetHash().ToString(),std::to_string(out.i)});
-    }
-
-    return result;
-}
-
-
-void MasternodeSetupTool::writeDigitalcoinConfFile(string _line)
-{
-    //
-    //  add a line to a file
-    //
-    // reopen the log file, if requested
-    
-    FILE *  fileout=NULL;
-    
-    //string strTimestamped=string("ploup=1");
-
-    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin.conf";
-
-    fileout = fopen (pathDebug.string().c_str(),"aw");// use "a" for append, "w" to overwrite, previous content will be deleted
-    string s =string("\n")+_line;
-
-    fprintf(fileout,s.c_str());
-
-    fclose (fileout); // must close after opening
-}
-
-void MasternodeSetupTool::writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index)
-{
-    FILE *  fileout=NULL;
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
-
-    fileout = fopen (pathDebug2.string().c_str(),"w");// use "a" for append, "w" to overwrite, previous content will be deleted
-
-    string s =string("\n")+_alias+string(" ")+_ipport+string(" ")+mnprivkey+string(" ")+_output+string(" ")+_index;
-
-    fprintf(fileout,s.c_str());
-    fclose (fileout); // must close after opening
-}
-
-std::string MasternodeSetupTool::getConfParam(std::string _arg)
-{
-    BOOST_FOREACH(auto ar, mapArgs) 
-    {
-    
-        if(ar.first==_arg)
-        {
-            //m_qobj->showMessageTwoArgs("arg : %1 = %2",ar.first,ar.second);
-            return ar.second;    
-        }
-
-    }
-    return string("");
+    walletModel->sendCoins(currentTransaction);
 }
 
 void MasternodeSetupTool::processSendCoinsReturn(WalletModel * walletModel, const WalletModel::SendCoinsReturn &sendCoinsReturn, const QString &msgArg)
@@ -271,35 +185,6 @@ void MasternodeSetupTool::processSendCoinsReturn(WalletModel * walletModel, cons
     default:
         return;
     }
-        m_qobj->showMessage("Error with transaction : %1" , msgParams.first.toStdString());   
-//    Q_EMIT message(tr("Send Coins"), msgParams.first, msgParams.second);
-}
 
-void MasternodeSetupTool::cleanDigitalcoinConf()
-{
-    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin.conf";
-
-    std::vector<std::string> lines;
-
-    std::string item_name;
-    std::ifstream nameFileout;
-
-    nameFileout.open(pathDebug.string().c_str());
-
-    while (nameFileout >> item_name)
-    {
-        if(item_name.find("masternode") == std::string::npos
-        && item_name.find("externalip") == std::string::npos)
-        {
-           lines.push_back(item_name);
-        }
-    }
-
-    nameFileout.close();
-    
-    remove(pathDebug.string().c_str());
-    
-    for(std::string& key : lines)
-        writeDigitalcoinConfFile(key);
-
+    m_qobj->showMessage("Error with transaction : %1" , msgParams.first.toStdString());   
 }

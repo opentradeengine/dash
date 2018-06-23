@@ -299,6 +299,7 @@ extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 extern UniValue getspentinfo(const UniValue& params, bool fHelp);
 extern UniValue sentinelping(const UniValue& params, bool fHelp);
 extern UniValue setupmasternode(const UniValue& params, bool fHelp);
+extern UniValue deletemasternode(const UniValue& params, bool fHelp);
 
 bool StartRPC();
 void InterruptRPC();

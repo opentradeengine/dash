@@ -21,6 +21,7 @@
 #include <QtNetwork>
 #include <QFileInfo>
 #include "masternodeSetupTool.h"
+#include "masternodeutil.h"
 
 #include <QString>
 
@@ -462,12 +463,11 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     m_MN.m_qobj=this;
 
     ReadConfigFile(mapArgs,mapMultiArgs);
-    std::string strMasternode = m_MN.getConfParam("-masternode");
-    std::string strExternalIp = m_MN.getConfParam("-externalip");
-    std::string strMasternodeAddr = m_MN.getConfParam("-masternodeaddr");
-    std::string strMasternodePrivKey = m_MN.getConfParam("-masternodeprivkey");
-//    std::string strPort = m_MN.getConfParam("-port");
-    std::string mnGenkey = m_MN.makeGenkey();
+    std::string strMasternode = getConfParam("-masternode");
+    std::string strExternalIp = getConfParam("-externalip");
+    std::string strMasternodeAddr = getConfParam("-masternodeaddr");
+    std::string strMasternodePrivKey = getConfParam("-masternodeprivkey");
+    std::string mnGenkey = makeGenkey();
 
 
     bool masternodeFileExist=false;
@@ -513,14 +513,14 @@ void MasternodeList::on_setupMasternodeButton_clicked()
 
     if(strMasternode=="")
     {
-        m_MN.writeDigitalcoinConfFile("masternode=1");
+        writeDigitalcoinConfFile("masternode=1");
         strMasternode="1";
     }
 
     if(strMasternodePrivKey=="")
     {
         std::string tmp= ("masternodeprivkey="+mnGenkey);
-        m_MN.writeDigitalcoinConfFile(tmp);
+        writeDigitalcoinConfFile(tmp);
         strMasternodePrivKey=mnGenkey;
     }
    
@@ -529,18 +529,18 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     if(strExternalIp=="")
     {
         std::string tmp= "externalip="+strIpPort;
-        m_MN.writeDigitalcoinConfFile(tmp);
+        writeDigitalcoinConfFile(tmp);
         strExternalIp=strIpPort;
     }
 
     if(strMasternodeAddr=="")
     {
         std::string tmp= ("masternodeaddr="+strIpPort);
-        m_MN.writeDigitalcoinConfFile(tmp);
+        writeDigitalcoinConfFile(tmp);
         strMasternodeAddr=strIpPort;
     }
 
-    auto listOutputs = m_MN.checkMasternodeOutputs();
+    auto listOutputs = checkMasternodeOutputs();
     
     //Check if there is masternode output
     if(listOutputs.size()==0)
@@ -548,7 +548,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
         //Try to make a collateral trasaction
         m_MN.makeTransaction(walletModel);
 
-         listOutputs = m_MN.checkMasternodeOutputs();  
+         listOutputs = checkMasternodeOutputs();  
 
         if(listOutputs.size()==0)
         {
@@ -561,10 +561,8 @@ void MasternodeList::on_setupMasternodeButton_clicked()
         }
     }
 
-
     if(masternodeFileExist==true)
     {
-
         // Display message box
         QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Digitalcoin masternode setup."),
         tr("Do you want to override your existing masternode.conf file ?"),
@@ -582,8 +580,7 @@ void MasternodeList::on_setupMasternodeButton_clicked()
     }
             
     //Override masternode.conf file
-    m_MN.writeMasternodeConfFile("Masternode",strIpPort,strMasternodePrivKey,listOutputs[0].first,listOutputs[0].second);
-   
+    writeMasternodeConfFile("Masternode",strIpPort,strMasternodePrivKey,listOutputs[0].first,listOutputs[0].second);
 
     // Display message box
     QMessageBox::information(this, tr("Digitalcoin masternode setup."),
@@ -606,10 +603,7 @@ void MasternodeList::on_removeMasternodeButton_clicked()
     if(retval != QMessageBox::Yes) 
         return;
 
-    m_MN.cleanDigitalcoinConf();
-
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
-    remove( pathDebug2.string().c_str());
+    RemoveMasternodeConfigs();
     
     // Shutdown
     StartShutdown();

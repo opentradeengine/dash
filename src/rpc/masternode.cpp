@@ -18,6 +18,7 @@
 #include "rpc/server.h"
 #include "util.h"
 #include "utilmoneystr.h"
+#include "masternodeutil.h"
 
 #include <fstream>
 #include <iomanip>
@@ -850,74 +851,6 @@ UniValue sentinelping(const UniValue& params, bool fHelp)
     return true;
 }
 
-
-
-std::string makeGenkey()
-{
-    //genkey
-    CKey secret;
-    secret.MakeNewKey(false);
-
-    auto mnGenkey = CBitcoinSecret(secret).ToString();
-
-    return mnGenkey;
-}
-
-void writeDigitalcoinConfFile(string _line)
-{
-    FILE *  fileout=NULL;
-    
-    boost::filesystem::path pathDebug = GetDataDir() / "digitalcoin.conf";
-
-    fileout = fopen (pathDebug.string().c_str(),"aw");
-    string s =string("\n")+_line;
-
-    fprintf(fileout,s.c_str());
-
-    fclose (fileout);
-}
-
-std::string getConfParam(std::string _arg)
-{
-    BOOST_FOREACH(auto ar, mapArgs) 
-    {
-        if(ar.first==_arg)
-            return ar.second;    
-    }
-    return string("");
-}
-
-CBitcoinAddress GetAccountAddress( string strAccount, bool bForceNew=false);
-
-void writeMasternodeConfFile(string _alias, string _ipport,string mnprivkey,string _output,string _index)
-{
-    FILE *  fileout=NULL;
-    boost::filesystem::path pathDebug2 = GetDataDir() / "masternode.conf";
-
-    fileout = fopen (pathDebug2.string().c_str(),"w");// use "a" for append, "w" to overwrite, previous content will be deleted
-
-    string s =string("\n")+_alias+string(" ")+_ipport+string(" ")+mnprivkey+string(" ")+_output+string(" ")+_index;
-
-    fprintf(fileout,s.c_str());
-    fclose (fileout); // must close after opening
-}
-
-std::vector<std::pair<string,string>> checkMasternodeOutputs()
-{
-    std::vector<std::pair<string,string>> result;
-
-    std::vector<COutput> vPossibleCoins;
-    pwalletMain->AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_1000);
-
-    UniValue obj(UniValue::VOBJ);
-    BOOST_FOREACH(COutput& out, vPossibleCoins) 
-    {
-        result.push_back(std::pair<string,string>{out.tx->GetHash().ToString(),std::to_string(out.i)});
-    }
-
-    return result;
-}
-
 UniValue setupmasternode(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
@@ -927,7 +860,7 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
             + HelpRequiringPassphrase() +
             "\nArguments:\n"
             "1. \"IPAddress\" (string, required) Your external ip.\n"
-            + HelpExampleCli("setupmasternode", "\"1.2.3.4\"")
+            + HelpExampleCli("setupmasternode", "\"X.X.X.X\"")
         );
 
 
@@ -949,7 +882,7 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
             masternodeFileExist = true;
 
     if(masternodeFileExist==true)
-        return "Error Masternode already exist";
+        return "Error Masternode already exist \n Please delete it (deletemasternode) first if you want to use the Masternode setup tool.";
 
     if((strMasternode!="")
         &&(strExternalIp!="")
@@ -957,7 +890,7 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
         &&(strMasternodePrivKey!="")
         &&(masternodeFileExist==true))
     {
-        return "Error : Looks like you already have a Masternode :) \n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease press delete it (deletemasternode) first if you want to use the Masternode setup tool.";
+        return "Error : Looks like you already have a Masternode :) \n\nParameters you have in your digitalcoin.conf file :\n-masternode=%1\n-externalip=%2 \n-masternodeaddr=%3\n-masternodeprivkey=%4\n\nPlease delete it (deletemasternode) first if you want to use the Masternode setup tool.";
     }
 
     auto listOutputs = checkMasternodeOutputs();
@@ -965,12 +898,10 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
     //Check if there is masternode output
     if(listOutputs.size()==0)
     {
-        //Try to make a collateral trasaction
-        //makeTransaction(walletModel);
         UniValue transactionInfo(UniValue::VARR);
         CBitcoinAddress mnAddress = GetAccountAddress("Masternode",false);
         std::string addr = mnAddress.ToString();
-	std::string strMnPrice = std::to_string(MASTERNODE_PRICE);
+        std::string strMnPrice = std::to_string(MASTERNODE_PRICE);
 
         transactionInfo.push_back(addr);
         transactionInfo.push_back(strMnPrice.c_str());
@@ -979,40 +910,29 @@ UniValue setupmasternode(const UniValue& params, bool fHelp)
         listOutputs = checkMasternodeOutputs();  
 
         if(listOutputs.size()==0)
-         return "Error : Outputs not found";
+            return "Error : Outputs not found";
     }
 
-    if(strMasternode=="")
-    {
-        writeDigitalcoinConfFile("masternode=1");
-        strMasternode="1";
-    }
-
-    if(strMasternodePrivKey=="")
-    {
-        std::string tmp= ("masternodeprivkey="+mnGenkey);
-        writeDigitalcoinConfFile(tmp);
-        strMasternodePrivKey=mnGenkey;
-    }
-
-    if(strExternalIp=="")
-    {
-        std::string tmp= "externalip="+strIpPort;
-        writeDigitalcoinConfFile(tmp);
-        strExternalIp=strIpPort;
-    }
-
-    if(strMasternodeAddr=="")
-    {
-        std::string tmp= ("masternodeaddr="+strIpPort);
-        writeDigitalcoinConfFile(tmp);
-        strMasternodeAddr=strIpPort;
-    }
-
+    RemoveMasternodeConfigs();
+    writeDigitalcoinMasternodeConfInfo(mnGenkey, strIpPort);
     writeMasternodeConfFile("Masternode",strIpPort,strMasternodePrivKey,listOutputs[0].first,listOutputs[0].second);
-   
-   StartShutdown();
+
+    StartShutdown();
     
     return "Setup complet, please restart your wallet.";
+}
+
+UniValue deletemasternode(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "deletemasternode\n"
+            "\Delete your masternode configuration.\n"
+        );
+
+    RemoveMasternodeConfigs();
+    StartShutdown();
+
+    return "Masternode successfuly deleted, please restart your wallet.";
 }
 
